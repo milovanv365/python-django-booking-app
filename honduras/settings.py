@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'search_app',
     'reservation',
     'order',
-    'bootstrap4',
     'crispy_forms',
     'stripe',
     
