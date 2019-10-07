@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block metadescription %}
+    {{ nursery.description|truncatewords:155 }}    
+{% endblock %}
+{% block title %}
+    {{ nursery.name }} - Travel Sitter
+{% endblock %}
+{% block content %}
+    <div class="row my_prod_row_class">
+        <div class="mx-auto">
+            <p><a href="{% url 'service:allCity' %}">Home</a> | <a href="{{ nursery.city.get_url }}">{{nursery.city}}</a> | {{nursery.name}}</p>
+        </div>
+        </div class="container"> 
+        <div>
+            <br>
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
+                    <div style="min-width: 18rem;">
+                        <img class="card-img-top my_image" src="{{nursery.image.url}}" alt="{{nursery.name}}">
+                    </div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <div>
+                        <h1 class="my_prod_title">{{nursery.name}}</h1>
+                        <p>${{nursery.price}}</p>
+                        <p class="my_title">Nursery Description</p>
+                        <p class="text-justify my_prod_text">{{nursery.description}}<p>
+                        {% if nursery.stock <= 0%}
+                            <p class="text-justify my_prod_text"><b>Out of Stock</b></p>
+                        {% else %}
+                            <a class="btn btn-secondary" href="{% url 'reservation:add_reservation' nursery.id %}">Reserve here</a>
+                        {% endif %}
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+{% endblock %}

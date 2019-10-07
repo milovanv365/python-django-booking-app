@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block metadescription %}
+    This is a reservation form. Please enter all the details about the reservation and what you need to tell us about your child.
+{% endblock %}
+{% block title %}
+    Reservation form - Travel Sitter
+{% endblock %}
+{% block content %}
+    <h1>New reservation</h1>
+  <table class="table">
+    <form method="post" action="">
+    {% csrf_token %}
+    <tbody>
+      <tr>
+        <th>Time</th>
+        <td>{{ form.rtime }}</td>
+      </tr>
+      <tr>
+        <th>Your name</th>
+        <td>{{ form.your_name }}</td>
+      </tr>
+      <tr>
+         <th>Your Email</th>
+         <td>{{ form.email }}</td>
+      </tr>
+      <tr>
+         <th>Date</th>
+         <td>{{ form.reservation_date }}</td>
+      </tr>
+      <tr>
+         <th>Age of your child</th>
+         <td>{{ form.age_ofthechild }}</td>
+      </tr>
+      <tr>
+         <th>If have an allergy, fill in</th>
+         <td>{{ form.allergies }}</td>
+      </tr>
+      <tr>
+         <th>If have not recieved a vaccination, fill in</th>
+         <td>{{ form.vaccinations }}</td>
+      </tr>
+      <tr>
+         <th>If do not want a hospitai in an emergency, fill in</th>
+         <td>{{ form.illness }}</td>
+      </tr>
+      <tr>
+         <th>If do not have travel insurance, fill in</th>
+         <td>{{ form.travel_insurance }}</td>
+      </tr>
+      <tr>
+         <th>If smart phone is not available while traveling, fill in</th>
+         <td>{{ form.wifi }}</td>
+      </tr>
+      <tr>
+         <th>A postscript about your child. And, if you have an SNS that can contact, fill in</th>
+         <td>{{ form.note }}</td>
+      </tr>
+    </tbody>
+      <tr>
+      <td><input class="btn btn-primary" type="submit" value="Submit">
+        <input class="btn btn-secondary" type="reset" value="Reset">
+      </td>
+      <td>
+      </td>
+      </tr>
+    </form>
+  </table>
+
+{% endblock %}
