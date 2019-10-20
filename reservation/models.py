@@ -25,7 +25,8 @@ class ReservationItem(models.Model):
     
     def __str__(self):
         return self.nursery
-    
+
+
 class ReservationInfomation(models.Model):
     TIME_CHOICES = (
         ('10:00-17:00', '10:00-17:00'),
@@ -47,4 +48,3 @@ class ReservationInfomation(models.Model):
     
     def _str_(self):
         return self.your_name
-    

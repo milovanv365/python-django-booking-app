@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1e0#m#3xdr-vil%x*daoo1v)fv+g9kz&s64b&#3znrvg8_2!$4'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -83,10 +85,13 @@ WSGI_APPLICATION = 'honduras.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
 }
 
 
@@ -127,21 +132,30 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
-     os.path.join(BASE_DIR,'static'), 
+     os.path.join(BASE_DIR, 'static'),
         
     )
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'static','media')
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_KgRgTby4glTHbWhHwPEnRBgi00MyOnd003'
-STRIPE_SECRET_KEY = 'sk_test_2TNaDeKsyLy35yBbYrSpwEju00ubBuV3ru'
+# STRIPE_PUBLISHABLE_KEY = 'pk_test_KgRgTby4glTHbWhHwPEnRBgi00MyOnd003'
+# STRIPE_SECRET_KEY = 'sk_test_2TNaDeKsyLy35yBbYrSpwEju00ubBuV3ru'
+STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'postmaster@sandboxd190e28296664467b476d0f831f10450.mailgun.org'
-EMAIL_HOST_PASSWORD = '42e0d9a6f5cb573dd94fb6a68247447f-19f318b0-af37be4f'
+# EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_PORT = '587'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'postmaster@sandboxd190e28296664467b476d0f831f10450.mailgun.org'
+# EMAIL_HOST_PASSWORD = '42e0d9a6f5cb573dd94fb6a68247447f-19f318b0-af37be4f'
+
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

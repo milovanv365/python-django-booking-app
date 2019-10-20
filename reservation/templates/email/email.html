@@ -1,89 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>New Reservation #{{ transaction.id }} - Travel Sitter</title>
-        <style>
-            table {
-                width: 60%;
-                margin: 0 auto;
-                border-collapse: collapse;
-            }
-            table tr td {
-                border: 1px solid #c1c1c1;   
-            }
-            p {
-                padding-right: 50px;
-                padding-left: 50px;   
-            }
-        </style>
-    </head>
-    <body>
-        <center>
-            <h1>Thanks for reserve with us</h1>
-            <p>This email is to confirm that you have reserved on the Travel Sitter.<br>Please make sure that all the details of your order are correct.</p>
-        </center>
-        <br>
-        <table>
-            <tr>
-                <td valign="top" colspan="2" style="width: 50%;">
-                    <b>Your Address:</b><br>
-                    {{ transaction.billingName }}<br>
-                    {{ transaction.billingAddress1 }}<br>
-                    {{ transaction.billingCity }}<br>
-                    {{ transaction.billingPostcode }}<br>
-                    {{ transaction.billingCountry }}<br>
-                </td> 
-                <td valign="top" colspan="2" style="width: 50%;">
-                    <b>Reservation: </b>#{{ transaction.id }}<br>
-                    <b>Date: </b>{{ transaction.created|date:"d M Y"}}
-                </td>    
-            </tr>
-            
-           <tr>
-                <td><b>Nursery</b></td>
-                <td><b>Qty</b></td>
-                <td><b>Unit Price</b></td>
-                <td><b>Sub-Total</b></td>
-            </tr> 
-            {% for item in order_items %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Reservation #{{ transaction.id }} - Travel Sitter</title>
+    <style>
+        table {
+            width: 70%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        table tr td {
+            border: 1px solid #c1c1c1;
+            padding: 15px;
+        }
+        h3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        p {
+            padding-right: 50px;
+            padding-left: 50px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>Thanks for reserve with us</h1>
+        <p>This email is to confirm that you have reserved on the Travel Sitter.<br>Please make sure that all the details of your order are correct.</p>
+    </center>
+    <br>
+    <table>
+        <tr>
+            <td valign="top" colspan="2" style="width: 50%;">
+                <h3>Your Address:</h3>
+                <b>Billing Name: </b>{{ transaction.billingName }}<br>
+                <b>Billing Address: </b>{{ transaction.billingAddress1 }}<br>
+                <b>Billing City: </b>{{ transaction.billingCity }}<br>
+                <b>Billing PostCode: </b>{{ transaction.billingPostcode }}<br>
+                <b>Billing Country: </b>{{ transaction.billingCountry }}<br>
+                <b>Shipping Name: </b>{{ transaction.shippingName }}<br>
+                <b>Shipping Address: </b>{{ transaction.shippingAddress1 }}<br>
+                <b>Shipping City: </b>{{ transaction.shippingCity }}<br>
+                <b>Shipping PostCode: </b>{{ transaction.shippingPostcode }}<br>
+                <b>Shipping Country: </b>{{ transaction.shippingCountry }}<br>
+            </td>
+            <td valign="top" colspan="2" style="width: 50%;">
+                <h3>Transaction: </h3>
+                <b>Transaction Number: </b>#{{ transaction.id }}<br>
+                <b>Transaction Date: </b>{{ transaction.created|date:"d M Y"}}
+            </td>
+        </tr>
+
+        <tr>
+            <td><b>Nursery</b></td>
+            <td><b>Qty</b></td>
+            <td><b>Unit Price</b></td>
+            <td><b>Sub-Total</b></td>
+        </tr>
+        {% for item in order_items %}
             <tr>
                 <td>{{ item.nursery }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>${{ item.price }}</td>
                 <td>${{ item.sub_total }}</td>
             </tr>
-            {% endfor %} 
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>Total</b></td>
-                <td>${{ transaction.total }}</td>
-            </tr>
-              <tr>
-                <td colspan="3" style="text-align: right;"><b>Total paid</b></td>
-                <td>${{ transaction.total }}</td>
-            </tr>
-            <tr>
-           <!-- 
-                <td valign="top" colspan="2" style="width: 50%;">
-                    <b>Nursery information:</b><br>
-                    {{ now_nursery.description }}<br>
-                    {{ transaction.shippingAddress1 }}<br>
-                    {{ transaction.shippingCity }}<br>
-                    {{ transaction.shippingPostcode }}<br>
-                    {{ transaction.shippingCountry }}<br>
-                </td>  
-                -->
-                <td valign="top" colspan="2" style="width: 50%;">
-                    <b>Payment details:</b><br>
-                    ${{ transaction.total }} was paid successfully via Stripe.
-                </td>
-            </tr>
-        </table>
-        <center>
-            <br>
-            <p>If you are a registered customer and want to check your order history, please <a href="http://127.0.0.1:8000/account/login/">sign in</a>.<br>Otherwise <a href="http://127.0.0.1:8000/account/create/">sign up</a> to create a new account with us.</p>
-        </center>
-    </body>
+        {% endfor %}
+        <tr>
+            <td colspan="3" style="text-align: right;"><b>Total</b></td>
+            <td>${{ transaction.total }}</td>
+        </tr>
+        <tr>
+<!--        <td colspan="3" style="text-align: right;"><b>Total paid</b></td>
+            <td>${{ transaction.total }}</td>-->
+            <td valign="top" colspan="4">
+                <b>Payment details:</b><br/>
+                ${{ transaction.total }} was paid successfully via Stripe.
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" colspan="2">
+                <h3>Nursery information:</h3>
+                <b>Nursery Name: </b>{{ nursery.name }}<br>
+                <b>Nursery Slug: </b>{{ nursery.slug }}<br>
+                <b>Nursery Description: </b>{{ nursery.description }}<br>
+                <b>Nursery Price: </b>{{ nursery.price }}<br>
+                <b>Nursery Stock: </b>{{ nursery.stock }}<br>
+            </td>
+            <td valign="top" colspan="2">
+                <h3>Reservation Detail:</h3>
+                <b>Reservation Time: </b>{{ reservation_information.rtime }}<br/>
+                <b>Reservation Person's Name: </b>{{ reservation_information.your_name }}<br/>
+                <b>Reservation Person's Email: </b>{{ reservation_information.email }}<br/>
+                <b>Reservation Date: </b>{{ reservation_information.reservation_date }}<br/>
+                <b>Age of child: </b>{{ reservation_information.age_ofthechild }}<br/>
+                <b>Allergies: </b>{{ reservation_information.allergies }}<br/>
+                <b>Vaccination: </b>{{ reservation_information.vaccinations }}<br/>
+                <b>Illness: </b>{{ reservation_information.illness }}<br/>
+                <b>Travel_insurance: </b>{{ reservation_information.travel_insurance }}<br/>
+                <b>Wifi: </b>{{ reservation_information.wifi }}<br/>
+                <b>Note: </b>{{ reservation_information.note }}<br/>
+            </td>
+<!--        <td valign="top" colspan="2" style="width: 50%;">
+                <b>Payment details:</b><br>
+                ${{ transaction.total }} was paid successfully via Stripe.
+            </td>-->
+        </tr>
+    </table>
+    <center>
+        <br>
+        <p>If you are a registered customer and want to check your order history, please <a href="http://127.0.0.1:8000/account/login/">sign in</a>.<br>Otherwise <a href="http://127.0.0.1:8000/account/create/">sign up</a> to create a new account with us.</p>
+    </center>
+</body>
 </html>
                  

@@ -19,14 +19,12 @@ class Order(models.Model):
     shippingCountry = models.CharField(max_length=200, blank=True)
     nursery = models.ForeignKey(Nursery, on_delete=models.CASCADE, null=True)
 
-
     class Meta:
         db_table = 'Order'
         ordering = ['-created']
         
     def __str__(self):
         return str(self.id)
-    
 
     
 class OrderItem(models.Model):

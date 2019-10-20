@@ -69,4 +69,3 @@ class ReservationInfoForm(forms.Form):
         required=False,  
         widget=forms.TextInput()
     )
-   
