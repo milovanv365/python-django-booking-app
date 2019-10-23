@@ -19,7 +19,7 @@
     {% if city %}
         <div class="row-my_row_class">
             <div class="mx-auto">
-                <p class="text-justify"><a href="{% url 'service:allCity' %}">All Cities</a> | {{city.name}}</p>
+                <p class="text-justify"><a href="{% url 'service:AllCity' %}">All Cities</a> | {{city.name}}</p>
             </div>
         </div>
     {% endif %}
@@ -43,13 +43,16 @@
     {% endif %}
     <div class="container">
         <div class="row mx-auto">
-           {% for nursery in sittings.object_list %}
+           {% for nursery in nursery.object_list %}
                <div class="my_bottom_margin col-9 col-sm-12 col-md-4 col-md-12 col-lg-4">
                    <div class="card text-center" style="min-width: 18rem;">
                        <a href="{{nursery.get_url}}"><img class="card-img-top my_image" src="{{nursery.image.url}}" alt="{{nursery.name}}"></a>
                        <div class="card-body">
                            <h4>{{nursery.name}}</h4>
-                           <p>{{nursery.description}}</p>
+{#                           <p>{{nursery.description}}</p>#}
+                           <p class="text-justify"><span>Address: </span>{{nursery.address}}</p>
+                           <p class="text-justify"><span>Tell: </span>{{nursery.telephone}}</p>
+                           <p class="text-justify"><span>Station: </span>{{nursery.station}}</p>
                            <p>${{nursery.price}}</p>
                        </div>
                    </div> 
@@ -57,11 +60,11 @@
            {% endfor %}
        </div>
        <div class="mx-auto">
-           {% if sittings.paginator.num_pages > 1 %}
+           {% if nursery.paginator.num_pages > 1 %}
                <hr>
                <div class="text-center">
-                   {% for pg in sittings.paginator.page_range %}
-                       <a href="?page={{pg}}" class="btn btn-light btn-sm {% if sittings.number == pg %}active{% endif %}">{{pg}}</a>
+                   {% for pg in nursery.paginator.page_range %}
+                       <a href="?page={{pg}}" class="btn btn-light btn-sm {% if nursery.number == pg %}active{% endif %}">{{pg}}</a>
                    {% endfor %}
                </div>
            {% endif %}

@@ -5,7 +5,11 @@
             <li>
                 Welcome, <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ request.user.first_name }} <i class="fas fa-user-circle"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a href="{% url 'order:order_history' %}" class="dropdown-item">Reserve History</a>
+                    {% if user.groups.all.0.name == "Vendor" %}
+                        <a href="{% url 'service:VendorDashboard' %}" class="dropdown-item">Nursery Management</a>
+                    {% else %}
+                        <a href="{% url 'order:order_history' %}" class="dropdown-item">Reserve History</a>
+                    {% endif %}
                 </div>
             </li>
             <li>

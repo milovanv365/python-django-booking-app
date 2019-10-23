@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% block title %}
+    Vendor Dashboard
+{% endblock %}
+{% block content %}
+    <div class="vendor-nursery">
+        <h1>Nursery Information</h1>
+        {% if nursery_user_exist %}
+            <div class="alert alert-danger">
+                <strong>Duplication!</strong> You have already registered a child care center.
+            </div>
+        {% endif %}
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+
+            {% bootstrap_field nursery_form.name %}
+            {% bootstrap_field nursery_form.slug %}
+            {% bootstrap_field nursery_form.description %}
+            {% bootstrap_field nursery_form.address %}
+            {% bootstrap_field nursery_form.telephone %}
+            {% bootstrap_field nursery_form.station %}
+            {% bootstrap_field nursery_form.city %}
+
+            <div class="form-group">
+                <label class="control-label">Price</label>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-2">Hour(h)</div>
+                    <div class="col-md-4">{% bootstrap_field nursery_form.time_one %}</div>
+                    <div class="col-md-2">Price(usd)</div>
+                    <div class="col-md-4">{% bootstrap_field nursery_form.price_one %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Hour(h)</div>
+                    <div class="col-md-4">{% bootstrap_field nursery_form.time_two %}</div>
+                    <div class="col-md-2">Price(usd)</div>
+                    <div class="col-md-4">{% bootstrap_field nursery_form.price_two %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">Hour(h)</div>
+                    <div class="col-md-4">{% bootstrap_field nursery_form.time_three %}</div>
+                    <div class="col-md-2">Price(usd)</div>
+                    <div class="col-md-4">{% bootstrap_field nursery_form.price_three %}</div>
+                </div>
+            </div>
+
+            {% bootstrap_field nursery_form.image %}
+            {% bootstrap_field nursery_form.stock %}
+
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+{% endblock %}

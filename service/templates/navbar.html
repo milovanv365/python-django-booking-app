@@ -10,7 +10,7 @@
           Reserve
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'service:allCity' %}">All Nurseries</a>
+          <a class="dropdown-item" href="{% url 'service:AllCity' %}">All Nurseries</a>
           {% for cat in links %}
           <a class="dropdown-item" href="{{cat.get_url}}">{{cat.name}}</a>
           {% endfor %}     
@@ -22,7 +22,7 @@
       </li>  
       {% endif %}
     </ul>
-    <form class="form-inline my-2 my-lg-0" action="{% url 'search_app:searchResult' %}" method="get">
+    <form class="form-inline my-2 my-lg-0" action="{% url 'search:SearchResult' %}" method="get">
       {% csrf_token %}
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
       <button class="btn btn-secondary my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>

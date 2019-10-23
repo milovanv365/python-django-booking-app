@@ -9,10 +9,9 @@
 {% block content %}
     <div class="row my_prod_row_class">
         <div class="mx-auto">
-            <p><a href="{% url 'service:allCity' %}">Home</a> | <a href="{{ nursery.city.get_url }}">{{nursery.city}}</a> | {{nursery.name}}</p>
+            <p><a href="{% url 'service:AllCity' %}">Home</a> | <a href="{{ nursery.city.get_url }}">{{nursery.city}}</a> | {{nursery.name}}</p>
         </div>
-        </div class="container"> 
-        <div>
+        <div class="container">
             <br>
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
@@ -23,13 +22,20 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div>
                         <h1 class="my_prod_title">{{nursery.name}}</h1>
-                        <p>${{nursery.price}}</p>
-                        <p class="my_title">Nursery Description</p>
-                        <p class="text-justify my_prod_text">{{nursery.description}}<p>
+                        <div>
+                            {% for price_plan_item in nursery.price_plan %}
+                                <p><span>{{ price_plan_item.time }}  Hour : </span><span>{{ price_plan_item.price }} USD</span></p>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <p class="text-justify"><span>Address : </span>{{nursery.address}}</p>
+                            <p class="text-justify"><span>Tell : </span>{{nursery.telephone}}</p>
+                            <p class="text-justify"><span>Station : </span>{{nursery.station}}</p>
+                        </div>
                         {% if nursery.stock <= 0%}
                             <p class="text-justify my_prod_text"><b>Out of Stock</b></p>
                         {% else %}
-                            <a class="btn btn-secondary" href="{% url 'reservation:add_reservation' nursery.id %}">Reserve here</a>
+                            <a class="btn btn-secondary" href="{% url 'reservation:AddReservation' nursery_id %}">Reserve here</a>
                         {% endif %}
                     </div>
                 </div>    
