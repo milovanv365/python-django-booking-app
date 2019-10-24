@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
 {% load staticfiles %}
 {% block metadescription %}
     {{ nursery.description|truncatewords:155 }}    
@@ -12,7 +13,12 @@
             <p><a href="{% url 'service:AllCity' %}">Home</a> | <a href="{{ nursery.city.get_url }}">{{nursery.city}}</a> | {{nursery.name}}</p>
         </div>
         <div class="container">
-            <br>
+            {% if show_alert %}
+            <div class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Info! </strong>You must register as customer and log in to make a reservation
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6 text-center">
                     <div style="min-width: 18rem;">
@@ -24,7 +30,11 @@
                         <h1 class="my_prod_title">{{nursery.name}}</h1>
                         <div>
                             {% for price_plan_item in nursery.price_plan %}
-                                <p><span>{{ price_plan_item.time }}  Hour : </span><span>{{ price_plan_item.price }} USD</span></p>
+                                {% if price_plan_item.time == '1' %}
+                                    <p><span>{{ price_plan_item.time }} Hour : </span><span>{{ price_plan_item.price }} USD</span></p>
+                                {% else %}
+                                    <p><span>{{ price_plan_item.time }} Hours : </span><span>{{ price_plan_item.price }} USD</span></p>
+                                {% endif %}
                             {% endfor %}
                         </div>
                         <div>
@@ -35,7 +45,7 @@
                         {% if nursery.stock <= 0%}
                             <p class="text-justify my_prod_text"><b>Out of Stock</b></p>
                         {% else %}
-                            <a class="btn btn-secondary" href="{% url 'reservation:AddReservation' nursery_id %}">Reserve here</a>
+                            <a class="btn btn-secondary" href="{% url 'reservation:ReservationAdd' nursery_id %}">Reserve here</a>
                         {% endif %}
                     </div>
                 </div>    

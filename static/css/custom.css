@@ -156,3 +156,42 @@ padding-bottom: 20px;
     letter-spacing: .2em;
     font-size: 12px;
 }
+.reservation {
+    margin-bottom: 50px;
+}
+.reservation .price-box {
+    width: 100px;
+    margin: 30px auto;
+}
+.reservation .price {
+    text-align: center;
+    min-width: 50px;
+    min-height: 50px;
+    line-height: 50px;
+    border: 1px solid #000000;
+}
+.reservation .money-signal {
+    line-height: 50px;
+    margin-left: 10px;
+}
+.reservation .page-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.reservation .reservation-form {
+    margin-top: 100px;
+}
+.reservation .nursery-name {
+    margin-top: 30px;
+    text-align: center;
+}
+.reservation-confirm {
+    margin-bottom: 30px;
+}
+.reservation-confirm-label {
+    line-height: 50px;
+}
+.reservation .row {
+    margin-left: 0;
+    margin-right: 0;
+}

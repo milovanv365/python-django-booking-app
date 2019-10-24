@@ -53,6 +53,15 @@ def city_detail(request, c_slug=None):
 
 
 def nursery_detail(request, c_slug, nursery_slug):
+    current_user = request.user
+    show_alert = False
+    if current_user.is_authenticated is False:
+        show_alert = True
+    else:
+        user_type = current_user.groups.get(user=current_user).name
+        if user_type == 'Vendor':
+            show_alert = True
+
     try:
         nursery = Nursery.objects.get(city__slug=c_slug, slug=nursery_slug)
         nursery.id = int(nursery.id)
@@ -61,7 +70,13 @@ def nursery_detail(request, c_slug, nursery_slug):
 
     except Exception as e:
         raise e
-    return render(request, 'service/nursery.html', {'nursery': nursery, 'nursery_id': nursery_id})
+
+    context = {
+        'nursery': nursery,
+        'nursery_id': nursery_id,
+        'show_alert': show_alert
+    }
+    return render(request, 'service/nursery.html', context)
 
 
 @login_required

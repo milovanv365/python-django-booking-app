@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+{% block title %}
+    Vendor Dashboard
+{% endblock %}
+{% block content %}
+    <div class="reservation">
+        <h1 class="page-title">Make a Reservation</h1>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="text-center">
+                    <div><img class="nursery-photo" src="{{ nursery_img }}" style="width: 100%"></div>
+                    <h2 class="nursery-name">{{ nursery_name }}</h2>
+                </div>
+                <div class="reservation-confirm">
+                    <div class="price-box clearfix">
+                        <p class="price float-left"></p>
+                        <p class="float-left money-signal">USD</p>
+                    </div>
+                    <div class="row">
+                        <p class="col-md-6 reservation-confirm-label">Dates: </p>
+                        <p class="col-md-6 price">{{ reservation.start_date }}</p>
+                    </div>
+                    <div class="row">
+                        <p class="col-md-6 reservation-confirm-label">Start time: </p>
+                        <p class="col-md-6 price">{{ reservation.start_time }} : 00</p>
+                    </div>
+                    <div class="row">
+                        <p class="col-md-6 reservation-confirm-label">Hourly plan: </p>
+                        <p class="col-md-6 price">{{ reservation.period }}H</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="mx-auto">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <script
+                                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                data-key="{{ data_key }}"
+                                data-image="{% static 'img/atom.png' %}"
+                                data-name="Travel Sitter"
+                                data-description="{{ description }}"
+                                data-amount="{{ stripe_total }}"
+                                data-locale="auto"
+                                data-currency="usd"
+                                data-shipping-address="true"
+                                data-billing-address="true"
+                                data-zip-code="true">
+                            </script>
+                        </form>
+                        <a href="{% url 'service:AllCity' %}" class="btn btn-secondary btn-block my_custom_button">Make the other Reservation</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+{% endblock %}
