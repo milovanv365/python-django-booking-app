@@ -32,7 +32,7 @@ class Reservation(models.Model):
 
 class Payment(models.Model):
     token = models.CharField(max_length=250, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='USD Total')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='USD Total')
     emailAddress = models.EmailField(max_length=250, blank=True, verbose_name='Email Address')
     billingName = models.CharField(max_length=250, blank=True)
     billingAddress1 = models.CharField(max_length=250, blank=True)

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Reservation #{{ payment.id }} - Travel Sitter</title>
+    <style>
+        table {
+            width: 70%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        table tr td {
+            border: 1px solid #c1c1c1;
+            padding: 15px;
+        }
+        h3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        p {
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>Thanks for reserve with us</h1>
+        <p>This email is to confirm that you have reserved on the Travel Sitter.<br>Please make sure that all the details of your order are correct.</p>
+    </center>
+    <br>
+    <table>
+        <tr>
+            <td valign="top">
+                <h3>Your Address:</h3>
+                <p><b>Billing Name: </b>{{ payment.billingName }}<br></p>
+                <p><b>Billing Address: </b>{{ payment.billingAddress1 }}<br></p>
+                <p><b>Billing City: </b>{{ payment.billingCity }}<br></p>
+                <p><b>Billing PostCode: </b>{{ payment.billingPostcode }}<br></p>
+                <p><b>Billing Country: </b>{{ payment.billingCountry }}<br></p>
+                <p><b>Shipping Name: </b>{{ payment.shippingName }}<br></p>
+                <p><b>Shipping Address: </b>{{ payment.shippingAddress1 }}<br></p>
+                <p><b>Shipping City: </b>{{ payment.shippingCity }}<br></p>
+                <p><b>Shipping PostCode: </b>{{ payment.shippingPostcode }}<br></p>
+                <p><b>Shipping Country: </b>{{ payment.shippingCountry }}<br></p>
+            </td>
+            <td valign="top">
+                <h3>Payment: </h3>
+                <p><b>Number: </b>#{{ payment.id }}</p>
+                <p><b>Amount: </b>{{ payment.amount}}</p>
+                <p><b>Date: </b>{{ payment.created_at|date:"d M Y"}}</p>
+                <p><b>Payment details:</b>${{ payment.amount }} was paid successfully via Stripe.</p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <h3>Nursery Information:</h3>
+                <p><b>Nursery Name: </b>{{ nursery.name }}</p>
+                <p><b>Nursery Slug: </b>{{ nursery.slug }}</p>
+                <p><b>Nursery Description: </b>{{ nursery.description }}<p>
+                <p><b>Nursery Stock: </b>{{ nursery.stock }}</p>
+            </td>
+            <td valign="top">
+                <h3>Reservation Detail:</h3>
+                <p><b>Reservation Date: </b>{{ reservation.start_date }}<br/></p>
+                <p><b>Reservation Time: </b>{{ reservation.start_time }}<br/></p>
+                <p><b>Reservation Person's Name: </b>{{ reservation.name }}<br/></p>
+                <p><b>Reservation Person's Email: </b>{{ reservation.email }}<br/></p>
+                <p><b>Age of child: </b>{{ reservation.child_age }}<br/></p>
+                <p><b>Allergies: </b>{{ reservation.allergy }}<br/></p>
+                <p><b>Vaccination: </b>{{ reservation.vaccination }}<br/></p>
+                <p><b>Illness: </b>{{ reservation.illness }}<br/></p>
+                <p><b>Travel_insurance: </b>{{ reservation.travel_insurance }}<br/></p>
+                <p><b>Wifi: </b>{{ reservation.wifi }}<br/></p>
+                <p><b>Note: </b>{{ reservation.note }}<br/></p>
+            </td>
+        </tr>
+    </table>
+    <center>
+        <br>
+        <p>If you are a registered customer and want to check your reservation history, please <a href="http://127.0.0.1:8000/account/login/">sign in</a>.<br>Otherwise <a href="http://127.0.0.1:8000/account/create/">sign up</a> to create a new account with us.</p>
+    </center>
+</body>
+</html>
+                 

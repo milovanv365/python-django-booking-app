@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load bootstrap4 %}
 {% block title %}
-    Vendor Dashboard
+    Transaction
 {% endblock %}
 {% block content %}
     <div class="reservation">
@@ -16,7 +16,7 @@
                 </div>
                 <div class="reservation-confirm">
                     <div class="price-box clearfix">
-                        <p class="price float-left"></p>
+                        <p class="price float-left">{{ reservation.price }}</p>
                         <p class="float-left money-signal">USD</p>
                     </div>
                     <div class="row">

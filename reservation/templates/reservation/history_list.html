@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load staticfiles %}
+{% block title %}
+    Reservation History Detail - Travel Sitter
+{% endblock %}
+{% block content %}
+    <div>
+        <div class="text-center">
+            <br>
+            <h1 class="text-center my_title">Reservation History</h1>
+            <br>
+            {% if reservations %}
+            <table class="table table-striped">
+                 <thead>
+                     <tr>
+                         <th>Reservation Number</th>
+                         <th>Reservation Date</th>
+                         <th>Reservation Amount</th>
+                         <th>Status</th>
+                         <th>Action</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     {% for reservation in reservations %}
+                     <tr>
+                         <td>{{ reservation.id }}</td>
+                         <td>{{ reservation.created_at|date:"d M Y" }}</td>
+                         <td>{{ reservation.price }}</td>
+                         <td><i class="fas fa-check"></i>&nbsp;Complete</td>
+                         <td><a href="{% url 'reservation:ReservationHistoryDetail' reservation.id %}">View Reservation</a></td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+              {% else %}
+              <p>You have not placed any reservations yet.<br><br><a href="{% url 'service:AllCity' %}" class="btn btn-secondary">Continue reserving
+              </a></p>
+              {% endif %}
+          </div>
+      </div>
+      <br>
+      <br>
+  {% endblock %}

@@ -12,6 +12,11 @@
                 <strong>Duplication!</strong> You have already registered a child care center.
             </div>
         {% endif %}
+        {% if nursery_name_or_slug_exist %}
+            <div class="alert alert-danger">
+                <strong>Duplication!</strong>Name or Slug already exist.
+            </div>
+        {% endif %}
         <form enctype="multipart/form-data" method="post">
             {% csrf_token %}
 

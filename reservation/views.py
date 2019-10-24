@@ -3,6 +3,8 @@ from .forms import ReservationForm
 from service.models import Nursery
 from reservation.models import Reservation, Payment
 from django.conf import settings
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 import stripe
 import json
@@ -49,7 +51,7 @@ def reservation_add(request, nursery_id):
         'nursery_name': nursery_name,
         'nursery_img': nursery_img
     }
-    return render(request, 'reservation_add.html', context)
+    return render(request, 'reservation/add.html', context)
 
 
 def reservation_transaction(request, reservation_id):
@@ -70,8 +72,8 @@ def reservation_transaction(request, reservation_id):
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data_key = settings.STRIPE_PUBLISHABLE_KEY
-    total = reservation.price
-    stripe_total = int(total) * 100
+    reservation_price = reservation.price
+    stripe_total = int(reservation_price) * 100
     description = 'Travel Sitter - Reserve'
 
     if request.method == 'POST':
@@ -101,7 +103,7 @@ def reservation_transaction(request, reservation_id):
 
             payment = Payment.objects.create(
                 token=token,
-                total=total,
+                amount=reservation_price,
                 emailAddress=email,
                 billingName=billingName,
                 billingAddress1=billingAddress1,
@@ -117,6 +119,14 @@ def reservation_transaction(request, reservation_id):
                 user=current_user,
                 reservation=reservation
             )
+            payment.save()
+
+            email_data = {
+                'nursery': nursery,
+                'reservation': reservation,
+                'payment': payment
+            }
+            send_email(email_data)
 
         except stripe.error.CardError as e:
             return False, e
@@ -131,4 +141,38 @@ def reservation_transaction(request, reservation_id):
         'stripe_total': stripe_total,
         'description': description
     }
-    return render(request, 'reservation_transaction.html', context)
+    return render(request, 'reservation/transaction.html', context)
+
+
+def send_email(email_data):
+    payment = email_data['payment']
+    try:
+        subject = "Travel Sitter - Reservation #{}".format(payment.id)
+        to_email = ['{}'.format(payment.emailAddress)]
+        from_email = "orders@travelsitter.com"
+        message = get_template('email.html').render(email_data)
+        msg = EmailMessage(subject, message, from_email, to_email)
+        msg.content_subtype = 'html'
+        msg.send()
+        print('The order email has been sent to the customer.')
+    except IOError as e:
+        return e
+
+
+@login_required
+def history_list(request):
+    reservations = Reservation.objects.filter(user=request.user)
+    context = {
+        'reservations': reservations
+    }
+    return render(request, 'reservation/history_list.html', context)
+
+
+def history_detail(request, reservation_id):
+    reservation = Reservation.objects.get(id=reservation_id)
+    nursery = Nursery.objects.get(id=reservation.nursery_id)
+    payment = Payment.objects.filter(reservation=reservation)
+    context = {
+
+    }
+    return render(request, 'reservation/history_detail.html', context)

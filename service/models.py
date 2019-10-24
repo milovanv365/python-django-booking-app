@@ -32,7 +32,7 @@ class Nursery(models.Model):
     image = models.ImageField(upload_to='nursery', blank=True)
     stock = models.IntegerField()
     city = models.ForeignKey(City, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     available = models.BooleanField(default=True)
 
     class Meta:

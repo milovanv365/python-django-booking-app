@@ -8,7 +8,7 @@
                     {% if user.groups.all.0.name == "Vendor" %}
                         <a href="{% url 'service:VendorDashboard' %}" class="dropdown-item">Nursery Management</a>
                     {% else %}
-                        <a href="{% url 'service:AllCity' %}" class="dropdown-item">Reserve History</a>
+                        <a href="{% url 'reservation:ReservationHistoryList' %}" class="dropdown-item">Reserve History</a>
                     {% endif %}
                 </div>
             </li>
