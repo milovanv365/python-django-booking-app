@@ -6,30 +6,48 @@
 {% endblock %}
 {% block content %}
     <div class="vendor-nursery">
-        <h1>Nursery Information</h1>
-        {% if nursery_user_exist %}
-            <div class="alert alert-danger">
-                <strong>Duplication!</strong> You have already registered a child care center.
-            </div>
-        {% endif %}
+        <h1 class="title-label">Nursery Information</h1>
         {% if nursery_name_or_slug_exist %}
             <div class="alert alert-danger">
-                <strong>Duplication!</strong>Name or Slug already exist.
+                <strong>Duplication! </strong> That name or slug already exist.
             </div>
         {% endif %}
-        <form enctype="multipart/form-data" method="post">
+        <form enctype="multipart/form-data" method="post" onsubmit="return goNext()">
             {% csrf_token %}
-
-            {% bootstrap_field nursery_form.name %}
-            {% bootstrap_field nursery_form.slug %}
-            {% bootstrap_field nursery_form.description %}
-            {% bootstrap_field nursery_form.address %}
-            {% bootstrap_field nursery_form.telephone %}
-            {% bootstrap_field nursery_form.station %}
-            {% bootstrap_field nursery_form.city %}
+            <div class="row">
+                <div class="col-md-2">Name</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.name %}</div>
+                <div class="col-md-2">Slug</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.slug %}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">Description</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.description %}</div>
+                <div class="col-md-2">Address</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.address %}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">Telephone</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.telephone %}</div>
+                <div class="col-md-2">Station</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.station %}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">City</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.city %}</div>
+                <div class="col-md-2">Stock</div>
+                <div class="col-md-4">{% bootstrap_field nursery_form.stock %}</div>
+            </div>
+{#            {% bootstrap_field nursery_form.name %}#}
+{#            {% bootstrap_field nursery_form.slug %}#}
+{#            {% bootstrap_field nursery_form.description %}#}
+{#            {% bootstrap_field nursery_form.address %}#}
+{#            {% bootstrap_field nursery_form.telephone %}#}
+{#            {% bootstrap_field nursery_form.station %}#}
+{#            {% bootstrap_field nursery_form.city %}#}
 
             <div class="form-group">
-                <label class="control-label">Price</label>
+                <label class="control-label">Hourly Plan: </label>
             </div>
 
             <div class="form-group">
@@ -54,10 +72,29 @@
             </div>
 
             {% bootstrap_field nursery_form.image %}
-            {% bootstrap_field nursery_form.stock %}
+{#            {% bootstrap_field nursery_form.stock %}#}
+            <div class="alert alert-danger img-field-alert">
+                <strong>Choose Image File! </strong>
+            </div>
 
-
-            <button type="submit" class="btn btn-primary">Save</button>
+            <div class="confirm-btn-box">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
         </form>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#image-clear_id').hide()
+            $('#image-clear_id').next().hide()
+        })
+        function goNext() {
+            let imgSelectObj = $('#id_image').val()
+            let imgUrl = $('#id_image').siblings('a').text()
+
+            if (imgSelectObj == '' && imgUrl == '') {
+                $('.img-field-alert').show()
+                return false
+            }
+        }
+    </script>
 {% endblock %}

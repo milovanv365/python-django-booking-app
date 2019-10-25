@@ -31,51 +31,50 @@ class SignUpForm(UserCreationForm):
 
 class NurseryForm(forms.Form):
     name = forms.CharField(
-        label='Name',
+        label='',
         max_length=200,
         required=True,
     )
 
     slug = forms.CharField(
-        label='Slug',
+        label='',
         max_length=200,
         required=True,
     )
 
     description = forms.CharField(
-        label='Description',
-        max_length=200,
-        required=False
+        label='',
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 3})
     )
     address = forms.CharField(
-        label='Address',
+        label='',
         max_length=200,
         required=False,
     )
     telephone = forms.CharField(
-        label='Telephone',
+        label='',
         max_length=200,
         required=False,
     )
     station = forms.CharField(
-        label='Station',
+        label='',
         max_length=200,
         required=False,
     )
     city = forms.ChoiceField(
+        label='',
         widget=forms.Select,
         choices=CITY_CHOICES,
     )
     time_one = forms.CharField(
         label='',
         max_length=10,
-        required=False,
         widget=forms.NumberInput()
     )
     price_one = forms.CharField(
         label='',
         max_length=10,
-        required=False,
         widget=forms.NumberInput()
     )
     time_two = forms.CharField(
@@ -106,7 +105,7 @@ class NurseryForm(forms.Form):
         required=False
     )
     stock = forms.CharField(
-        label='Stock',
+        label='',
         max_length=10,
         required=True,
         widget=forms.NumberInput(attrs={'placeholder': ''})

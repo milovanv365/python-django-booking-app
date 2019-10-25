@@ -171,8 +171,10 @@ def history_list(request):
 def history_detail(request, reservation_id):
     reservation = Reservation.objects.get(id=reservation_id)
     nursery = Nursery.objects.get(id=reservation.nursery_id)
-    payment = Payment.objects.filter(reservation=reservation)
+    payment = Payment.objects.get(reservation=reservation)
     context = {
-
+        'reservation': reservation,
+        'nursery': nursery,
+        'payment': payment
     }
     return render(request, 'reservation/history_detail.html', context)

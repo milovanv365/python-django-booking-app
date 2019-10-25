@@ -82,7 +82,8 @@ def nursery_detail(request, c_slug, nursery_slug):
 @login_required
 def vendor_dashboard(request):
     current_user = request.user
-    nursery_user_exist = False
+    # nursery_name_exist = False
+    # nursery_slug_exist = False
     nursery_name_or_slug_exist = False
 
     if request.method == 'POST':
@@ -95,8 +96,8 @@ def vendor_dashboard(request):
             telephone = nursery_form.cleaned_data['telephone']
             station = nursery_form.cleaned_data['station']
             # price = 500
-            image = nursery_form.cleaned_data['image']
             stock = nursery_form.cleaned_data['stock']
+            image = nursery_form.cleaned_data['image']
             city = City.objects.get(id=nursery_form.cleaned_data['city'])
 
             price_plan = []
@@ -116,31 +117,44 @@ def vendor_dashboard(request):
 
             price_plan = json.dumps(price_plan)
 
+            nursery_name_check = Nursery.objects.filter(name=name)
+            nursery_slug_check = Nursery.objects.filter(slug=slug)
             try:
-                # nursery = Nursery.objects.get(Q(name=name) | Q(slug=slug) | Q(user=current_user))
                 nursery = Nursery.objects.get(user=current_user)
-
-                nursery_for_check = Nursery.objects.filter(Q(name=name) | Q(slug=slug))
-                if len(nursery_for_check) > 0:
-                    if nursery_for_check.user != current_user:
-                        nursery_name_or_slug_exist = True
-                    else:
-                        update_nursery(nursery, nursery_form, price_plan, current_user)
+                if name == nursery.name and slug == nursery.slug:
+                    nursery_update(nursery, nursery_form, price_plan, current_user)
+                    return redirect('service:VendorDashboard')
                 else:
-                    update_nursery(nursery, nursery_form, price_plan, current_user)
+                    if name != nursery.name:
+                        if len(nursery_name_check) > 0:
+                            nursery_name_or_slug_exist = True
+                        else:
+                            nursery_update(nursery, nursery_form, price_plan, current_user)
+                            return redirect('service:VendorDashboard')
+                    else:
+                        if len(nursery_slug_check) > 0:
+                            nursery_name_or_slug_exist = True
+                        else:
+                            nursery_update(nursery, nursery_form, price_plan, current_user)
+                            return redirect('service:VendorDashboard')
+
+                # if nursery_name_check.user != current_user:
+                #     if len(nursery_name_check) > 0 or len(nursery_slug_check) > 0:
+                #         nursery_name_or_slug_exist = True
+                #     else:
+                #         nursery_update(nursery, nursery_form, price_plan, current_user)
+                #         return redirect('service:VendorDashboard')
             except Nursery.DoesNotExist:
-                try:
-                    nursery_for_check = Nursery.objects.get(Q(name=name) | Q(slug=slug))
+                if len(nursery_name_check) > 0 or len(nursery_slug_check) > 0:
                     nursery_name_or_slug_exist = True
-                except Nursery.DoesNotExist:
+                else:
                     Nursery.objects.create(
-                        name=name,
                         slug=slug,
                         description=description,
+                        name=name,
                         address=address,
                         telephone=telephone,
                         station=station,
-                        # price=price,
                         price_plan=price_plan,
                         image=image,
                         stock=stock,
@@ -151,22 +165,19 @@ def vendor_dashboard(request):
 
     else:
         nursery_form = NurseryForm()
-
         try:
             nursery = Nursery.objects.get(user=current_user)
-
             nursery_form.initial = {
                 'name': nursery.name,
                 'slug': nursery.slug,
                 'description': nursery.description,
                 'address': nursery.address,
                 'telephone': nursery.telephone,
-                'station': nursery.telephone,
+                'station': nursery.station,
                 'image': nursery.image,
                 'stock': nursery.stock,
                 'city': nursery.city_id
             }
-
             price_plan = json.loads(nursery.price_plan)
             if price_plan is not None:
                 for x in range(len(price_plan)):
@@ -185,13 +196,12 @@ def vendor_dashboard(request):
 
     context = {
         'nursery_form': nursery_form,
-        'nursery_user_exist': nursery_user_exist,
         'nursery_name_or_slug_exist': nursery_name_or_slug_exist
     }
     return render(request, 'service/vendor_dashboard.html', context)
 
 
-def update_nursery(nursery, nursery_form, price_plan, current_user):
+def nursery_update(nursery, nursery_form, price_plan, current_user):
     nursery.name = nursery_form.cleaned_data['name']
     nursery.slug = nursery_form.cleaned_data['slug']
     nursery.description = nursery_form.cleaned_data['description']
@@ -200,16 +210,11 @@ def update_nursery(nursery, nursery_form, price_plan, current_user):
     nursery.station = nursery_form.cleaned_data['station']
     nursery.price_plan = price_plan
     if nursery_form.cleaned_data['image'] is not None:
-        if nursery_form.cleaned_data['image'] is False:
-            nursery.image = ''
-        else:
-            nursery.image = nursery_form.cleaned_data['image']
+        nursery.image = nursery_form.cleaned_data['image']
     nursery.stock = nursery_form.cleaned_data['stock']
     nursery.city = City.objects.get(id=nursery_form.cleaned_data['city'])
     nursery.user = current_user
-
     nursery.save()
-    return redirect('service:VendorDashboard')
 
 
 def signup_view(request):

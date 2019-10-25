@@ -54,6 +54,7 @@ body {
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: .2em;
+    margin-bottom: 30px;
 }
 
 .my_prod_row_class {
@@ -194,4 +195,15 @@ padding-bottom: 20px;
 .reservation .row {
     margin-left: 0;
     margin-right: 0;
+}
+.vendor-nursery .title-label {
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+.confirm-btn-box {
+    margin: 40px 0;
+}
+
+.img-field-alert {
+    display: none;
 }
