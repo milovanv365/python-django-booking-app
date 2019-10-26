@@ -33,7 +33,7 @@
     <table>
         <tr>
             <td valign="top">
-                <h3>Your Address:</h3>
+                <h3>Your Address</h3>
                 <p><b>Billing Name: </b>{{ payment.billingName }}<br></p>
                 <p><b>Billing Address: </b>{{ payment.billingAddress1 }}<br></p>
                 <p><b>Billing City: </b>{{ payment.billingCity }}<br></p>
@@ -46,7 +46,7 @@
                 <p><b>Shipping Country: </b>{{ payment.shippingCountry }}<br></p>
             </td>
             <td valign="top">
-                <h3>Payment: </h3>
+                <h3>Payment</h3>
                 <p><b>Number: </b>#{{ payment.id }}</p>
                 <p><b>Amount: </b>{{ payment.amount}}</p>
                 <p><b>Date: </b>{{ payment.created_at|date:"d M Y"}}</p>
@@ -55,14 +55,14 @@
         </tr>
         <tr>
             <td valign="top">
-                <h3>Nursery Information:</h3>
+                <h3>Nursery Information</h3>
                 <p><b>Nursery Name: </b>{{ nursery.name }}</p>
                 <p><b>Nursery Slug: </b>{{ nursery.slug }}</p>
                 <p><b>Nursery Description: </b>{{ nursery.description }}<p>
                 <p><b>Nursery Stock: </b>{{ nursery.stock }}</p>
             </td>
             <td valign="top">
-                <h3>Reservation Detail:</h3>
+                <h3>Reservation Detail</h3>
                 <p><b>Reservation Date: </b>{{ reservation.start_date }}<br/></p>
                 <p><b>Reservation Time: </b>{{ reservation.start_time }}<br/></p>
                 <p><b>Reservation Person's Name: </b>{{ reservation.name }}<br/></p>

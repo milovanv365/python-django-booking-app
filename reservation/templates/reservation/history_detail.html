@@ -5,13 +5,14 @@
     Reservation History List - Travel Sitter
 {% endblock %}
 {% block content %}
-    <div>
-        <div class="text-center">
+    <div class="reservation-history-detail">
+        <div class="content-box">
             <br>
             <h1 class="text-center my_title">Reservation Details</h1>
             <br>
             <table>
                 <tr>
+                    {% if payment is not None %}
                     <td valign="top">
                         <h3>Your Address:</h3>
                         <p><b>Billing Name: </b>{{ payment.billingName }}<br></p>
@@ -26,12 +27,19 @@
                         <p><b>Shipping Country: </b>{{ payment.shippingCountry }}<br></p>
                     </td>
                     <td valign="top">
-                        <h3>Payment: </h3>
+                        <h3>Payment:</h3>
                         <p><b>Number: </b>#{{ payment.id }}</p>
                         <p><b>Amount: </b>{{ payment.amount}}</p>
                         <p><b>Date: </b>{{ payment.created_at|date:"d M Y"}}</p>
                         <p><b>Payment details:</b>${{ payment.amount }} was paid successfully via Stripe.</p>
                     </td>
+                    {% else %}
+                    <td colspan="2">
+                        <h3>Payment Detail:</h3>
+                        <p>You haven't payed yet.</p>
+                        <p>If you want to pay for this reservation click <a href="{% url 'reservation:ReservationConfirm' reservation.id %}">here</a></p>
+                    </td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td valign="top">
@@ -44,7 +52,7 @@
                     <td valign="top">
                         <h3>Reservation Detail:</h3>
                         <p><b>Reservation Date: </b>{{ reservation.start_date }}<br/></p>
-                        <p><b>Reservation Time: </b>{{ reservation.start_time }}<br/></p>
+                        <p><b>Reservation Time: </b>{{ reservation.start_time }}:00<br/></p>
                         <p><b>Reservation Person's Name: </b>{{ reservation.name }}<br/></p>
                         <p><b>Reservation Person's Email: </b>{{ reservation.email }}<br/></p>
                         <p><b>Age of child: </b>{{ reservation.child_age }}<br/></p>
@@ -57,7 +65,9 @@
                     </td>
                 </tr>
             </table>
-            <button class="btn btn-secondary" onclick="window.print();"><i class="fas fa-print"></i>Print Order</button>
+            <div class="text-center">
+                <button class="btn btn-secondary" onclick="window.print();"><i class="fas fa-print"></i>Print Order</button>
+            </div>
         </div>
     </div>
 {% endblock %}

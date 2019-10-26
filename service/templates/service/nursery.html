@@ -27,7 +27,7 @@
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                     <div>
-                        <h1 class="my_prod_title">{{nursery.name}}</h1>
+                        <h2 class="my_prod_title">{{nursery.name}}</h2>
                         <div>
                             {% for price_plan_item in nursery.price_plan %}
                                 {% if price_plan_item.time == '1' %}
@@ -45,7 +45,7 @@
                         {% if nursery.stock <= 0%}
                             <p class="text-justify my_prod_text"><b>Out of Stock</b></p>
                         {% else %}
-                            <a class="btn btn-secondary" href="{% url 'reservation:ReservationAdd' nursery_id %}">Reserve here</a>
+                            <a class="btn btn-secondary confirm-btn-box" href="{% url 'reservation:ReservationAdd' nursery_id %}">Reserve here</a>
                         {% endif %}
                     </div>
                 </div>    

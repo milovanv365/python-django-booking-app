@@ -4,14 +4,14 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+
 import json
 from .forms import SignUpForm, NurseryForm
 from .models import City, Nursery
 
 
 def index(request):
-    pass
+    return render(request, 'service/how-to.html')
 
 
 def all_city(request, c_slug=None):

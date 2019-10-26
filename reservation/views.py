@@ -1,18 +1,20 @@
-from django.shortcuts import render, redirect
-from .forms import ReservationForm
-from service.models import Nursery
-from reservation.models import Reservation, Payment
-from django.conf import settings
-from django.template.loader import get_template
-from django.core.mail import EmailMessage
-from django.contrib.auth.decorators import login_required
-import stripe
 import json
 
+import stripe
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
+from django.shortcuts import render, redirect
+from django.template.loader import get_template
 
-# @login_required
+from reservation.models import Reservation, Payment
+from service.models import Nursery
+from .forms import ReservationForm
+
+
 def reservation_add(request, nursery_id):
     current_user = request.user
+    reservation_exist = False
 
     if current_user.is_authenticated is False:
         return redirect('signin')
@@ -33,15 +35,24 @@ def reservation_add(request, nursery_id):
         form = ReservationForm(request.POST)
         form.fields['price_plan'].choices = price_plan_choices
         if form.is_valid():
-            reservation = form.save(commit=False)
-            reservation.period = form.data['plan_hour']
-            reservation.price = form.cleaned_data['price_plan']
-            reservation.nursery = nursery
-            reservation.user = current_user
-            reservation.save()
+            start_date = form.cleaned_data['start_date']
+            start_time = form.cleaned_data['start_time']
+            price = form.cleaned_data['price_plan']
+            reservation_check = Reservation.objects.filter(
+                user=current_user, nursery=nursery, start_date=start_date, start_time=start_time, price=price
+            )
+            if len(reservation_check) > 0:
+                reservation_exist = True
+            else:
+                reservation = form.save(commit=False)
+                reservation.period = form.data['plan_hour']
+                reservation.price = form.cleaned_data['price_plan']
+                reservation.nursery = nursery
+                reservation.user = current_user
+                reservation.save()
 
-            reservation_id = reservation.id
-            return redirect('reservation:ReservationConfirm', reservation_id)
+                reservation_id = reservation.id
+                return redirect('reservation:ReservationConfirm', reservation_id)
     else:
         form = ReservationForm()
         form.fields['price_plan'].choices = price_plan_choices
@@ -49,13 +60,15 @@ def reservation_add(request, nursery_id):
     context = {
         'form': form,
         'nursery_name': nursery_name,
-        'nursery_img': nursery_img
+        'nursery_img': nursery_img,
+        'reservation_exist': reservation_exist
     }
     return render(request, 'reservation/add.html', context)
 
 
 def reservation_transaction(request, reservation_id):
     current_user = request.user
+    payment_exist = False
 
     if current_user.is_authenticated is False:
         return redirect('signin')
@@ -66,6 +79,8 @@ def reservation_transaction(request, reservation_id):
         return redirect('service:VendorDashboard')
 
     reservation = Reservation.objects.get(id=reservation_id)
+    if reservation.paymentStatus == 'Payed':
+        payment_exist = True
     nursery = Nursery.objects.get(id=reservation.nursery_id)
     nursery_img = nursery.image.url
     nursery_name = nursery.name
@@ -121,13 +136,17 @@ def reservation_transaction(request, reservation_id):
             )
             payment.save()
 
+            reservation = Reservation.objects.get(id=reservation_id)
+            reservation.paymentStatus = 'Payed'
+            reservation.save()
+
             email_data = {
                 'nursery': nursery,
                 'reservation': reservation,
                 'payment': payment
             }
             send_email(email_data)
-
+            return redirect('reservation:ReservationCompleted', reservation_id)
         except stripe.error.CardError as e:
             return False, e
     else:
@@ -139,15 +158,17 @@ def reservation_transaction(request, reservation_id):
         'nursery_img': nursery_img,
         'data_key': data_key,
         'stripe_total': stripe_total,
-        'description': description
+        'description': description,
+        'payment_exist': payment_exist
     }
     return render(request, 'reservation/transaction.html', context)
 
 
 def send_email(email_data):
+    reservation = email_data['reservation']
     payment = email_data['payment']
     try:
-        subject = "Travel Sitter - Reservation #{}".format(payment.id)
+        subject = "Travel Sitter - Reservation #{}".format(reservation.id)
         to_email = ['{}'.format(payment.emailAddress)]
         from_email = "orders@travelsitter.com"
         message = get_template('email.html').render(email_data)
@@ -157,6 +178,13 @@ def send_email(email_data):
         print('The order email has been sent to the customer.')
     except IOError as e:
         return e
+
+
+def reservation_completed(request, reservation_id):
+    context = {
+        'reservation_id': reservation_id
+    }
+    return render(request, 'reservation/completed.html', context)
 
 
 @login_required
@@ -169,9 +197,21 @@ def history_list(request):
 
 
 def history_detail(request, reservation_id):
-    reservation = Reservation.objects.get(id=reservation_id)
-    nursery = Nursery.objects.get(id=reservation.nursery_id)
-    payment = Payment.objects.get(reservation=reservation)
+    try:
+        reservation = Reservation.objects.get(id=reservation_id)
+    except Reservation.DoesNotExist:
+        reservation = None
+
+    try:
+        nursery = Nursery.objects.get(id=reservation.nursery_id)
+    except Nursery.DoesNotExist:
+        nursery = None
+
+    try:
+        payment = Payment.objects.get(reservation=reservation)
+    except Payment.DoesNotExist:
+        payment = None
+
     context = {
         'reservation': reservation,
         'nursery': nursery,

@@ -27,7 +27,13 @@
                          <td>{{ reservation.id }}</td>
                          <td>{{ reservation.created_at|date:"d M Y" }}</td>
                          <td>{{ reservation.price }}</td>
-                         <td><i class="fas fa-check"></i>&nbsp;Complete</td>
+                         <td>
+                             {% if reservation.paymentStatus == "Payed" %}
+                                <i class="fas fa-check"></i>&nbsp;Complete
+                             {% elif reservation.paymentStatus == "NotPayed" %}
+                                 NotPayed
+                             {% endif %}
+                         </td>
                          <td><a href="{% url 'reservation:ReservationHistoryDetail' reservation.id %}">View Reservation</a></td>
                       </tr>
                       {% endfor %}

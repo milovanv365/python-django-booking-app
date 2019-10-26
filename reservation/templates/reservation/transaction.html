@@ -1,12 +1,15 @@
 {% extends "base.html" %}
-{% load staticfiles %}
 {% load bootstrap4 %}
+{% load staticfiles %}
 {% block title %}
     Transaction
 {% endblock %}
 {% block content %}
     <div class="reservation">
-        <h1 class="page-title">Make a Reservation</h1>
+        <h1 class="my_title">Payment</h1>
+        {% if payment_exist %}
+            <h4>You've already payed for this reservation</h4>
+        {% else %}
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
@@ -56,5 +59,6 @@
             </div>
             <div class="col-md-3"></div>
         </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
     <div class="reservation">
-        <h1 class="page-title">Make a Reservation</h1>
+        <h1 class="my_title">Make a Reservation</h1>
         <div class="row text-center">
             <div class="col-md-3"></div>
             <div class="col-md-6">
@@ -17,87 +17,102 @@
         <div>
             <h2 class="nursery-name">{{ nursery_name }}</h2>
         </div>
-        <div class="reservation-form">
-            <form enctype="multipart/form-data" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-6 row">
-                        <div class="col-md-4"><label class="">Date</label></div>
-                        <div class="col-md-8">{% bootstrap_field form.start_date %}</div>
-                    </div>
-                    <div class="col-md-3 row">
-                        <div class="col-md-6"><label class="">Start Time</label></div>
-                        <div class="col-md-6">{% bootstrap_field form.start_time %}</div>
-                    </div>
-                    <div class="col-md-3 row">
-                        <div class="col-md-6"><label class="">Hourly Plan</label></div>
-                        <div class="col-md-6">{% bootstrap_field form.price_plan %}</div>
-                    </div>
-                </div>
-            </div>
-            <input type="hidden" name="plan_hour" id="id_plan_hour" value="">
-            <div class="price-box clearfix">
-                <p class="price float-left"></p>
-                <p class="float-left money-signal">USD</p>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">Your Name</div>
-                    <div class="col-md-5">{% bootstrap_field form.name %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">Your Email</div>
-                    <div class="col-md-5">{% bootstrap_field form.email %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">Age of your child</div>
-                    <div class="col-md-5">{% bootstrap_field form.child_age %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">If have an allergy, fill in</div>
-                    <div class="col-md-5">{% bootstrap_field form.allergy %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">If have not received a vaccination, fill in</div>
-                    <div class="col-md-5">{% bootstrap_field form.vaccination %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">If do not want a hospital in an emergency, fill in</div>
-                    <div class="col-md-5">{% bootstrap_field form.illness %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">If do not have travel insurance, fill in</div>
-                    <div class="col-md-5">{% bootstrap_field form.travel_insurance %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">If smart phone is not available while traveling, fill in</div>
-                    <div class="col-md-5">{% bootstrap_field form.wifi %}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-7 control-label">A postscript about your child. And, if you have an SNS that can contact, fill in</div>
-                    <div class="col-md-5">{% bootstrap_field form.note %}</div>
-                </div>
-            </div>
 
-            <button type="" class="btn btn-secondary">Reserve here</button>
-        </form>
+        <div class="reservation-form">
+            {% if reservation_exist %}
+            <div class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Info! </strong>You have already same reservation. Please, check your reservation history
+            </div>
+            {% endif %}
+            <form enctype="multipart/form-data" method="post" onsubmit="return goNext()">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6 row">
+                            <div class="col-md-4"><label class="">Date</label></div>
+                            <div class="col-md-8">{% bootstrap_field form.start_date %}</div>
+                        </div>
+                        <div class="col-md-3 row">
+                            <div class="col-md-6"><label class="">Start Time</label></div>
+                            <div class="col-md-6">{% bootstrap_field form.start_time %}</div>
+                        </div>
+                        <div class="col-md-3 row">
+                            <div class="col-md-6"><label class="">Hourly Plan</label></div>
+                            <div class="col-md-6">{% bootstrap_field form.price_plan %}</div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="plan_hour" id="id_plan_hour" value="">
+                <div class="price-box clearfix">
+                    <p class="price float-left"></p>
+                    <p class="float-left money-signal">USD</p>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">Your Name</div>
+                        <div class="col-md-5">{% bootstrap_field form.name %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">Your Email</div>
+                        <div class="col-md-5">{% bootstrap_field form.email %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">Age of your child</div>
+                        <div class="col-md-5">{% bootstrap_field form.child_age %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">If have an allergy, fill in</div>
+                        <div class="col-md-5">{% bootstrap_field form.allergy %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">If have not received a vaccination, fill in</div>
+                        <div class="col-md-5">{% bootstrap_field form.vaccination %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">If do not want a hospital in an emergency, fill in</div>
+                        <div class="col-md-5">{% bootstrap_field form.illness %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">If do not have travel insurance, fill in</div>
+                        <div class="col-md-5">{% bootstrap_field form.travel_insurance %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">If smart phone is not available while traveling, fill in</div>
+                        <div class="col-md-5">{% bootstrap_field form.wifi %}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">A postscript about your child. And, if you have an SNS that can contact, fill in</div>
+                        <div class="col-md-5">{% bootstrap_field form.note %}</div>
+                    </div>
+                </div>
+                <div>
+                    <input type="checkbox" name="service_terms_policy" class="service_terms_policy">
+                    <a href="">Service, Terms and Privacy Policy</a>
+                </div>
+                <div class="alert alert-danger field-alert">
+                    <strong>You must agreed with our service, terms and privacy policy! </strong>
+                </div>
+                <div class="text-center confirm-btn-box">
+                    <button type="submit" class="btn btn-secondary">Reserve here</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -111,11 +126,18 @@
         })
 
         function setHourAndPrice() {
-            let hour = $('#id_price_plan').children("option:selected").text()
+            let period = $('#id_price_plan').children("option:selected").text()
             let price = $('#id_price_plan').children("option:selected").val()
-            {#console.log(hour+','+price)#}
-            $('#id_plan_hour').val(hour)
+            $('#id_plan_hour').val(period)
             $('.price-box .price').text(price)
+        }
+
+        function goNext() {
+            let agreed = $('.service_terms_policy').is(':checked')
+            if (!agreed) {
+                $('.field-alert').show()
+                return false
+            }
         }
     </script>
 

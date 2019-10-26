@@ -73,7 +73,7 @@
 
             {% bootstrap_field nursery_form.image %}
 {#            {% bootstrap_field nursery_form.stock %}#}
-            <div class="alert alert-danger img-field-alert">
+            <div class="alert alert-danger field-alert">
                 <strong>Choose Image File! </strong>
             </div>
 
@@ -92,7 +92,7 @@
             let imgUrl = $('#id_image').siblings('a').text()
 
             if (imgSelectObj == '' && imgUrl == '') {
-                $('.img-field-alert').show()
+                $('.field-alert').show()
                 return false
             }
         }

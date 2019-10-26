@@ -17,6 +17,7 @@ class Reservation(models.Model):
     note = models.TextField(blank=True, null=True)
     period = models.CharField(max_length=50, blank=True, null=True)
     price = models.CharField(max_length=50, blank=True, null=True)
+    paymentStatus = models.CharField(max_length=50, default='NotPayed')
     created_at = models.DateTimeField(auto_now_add=True)
 
     nursery = models.ForeignKey(Nursery, on_delete=models.CASCADE)
