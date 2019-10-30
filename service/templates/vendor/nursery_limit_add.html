@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load staticfiles %}
+{% block title %}
+    Reservation History Detail - Travel Sitter
+{% endblock %}
+
+{% block content %}
+<div>
+    <br>
+    <h1 class="text-center my_title">Reservation Limit</h1>
+    <br>
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                {% if limit_exist %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>You already have the same limit. You can check nursery limit history.</strong>
+                </div>
+                {% endif %}
+                {% if time_from_limit_exist %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Time(from) is in a limit range that already exists.</strong>
+                </div>
+                {% endif %}
+                {% if time_to_limit_exist %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Time(from) is in a limit range that already exists.</strong>
+                </div>
+                {% endif %}
+                <div class="row form-group">
+                    <div class="col-md-6 text-left">Date</div>
+                    <div class="col-md-6">{% bootstrap_field form.date %}</div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-2 text-left">From</div>
+                    <div class="col-md-4">{% bootstrap_field form.time_from %}</div>
+                    <div class="col-md-2 text-left">To</div>
+                    <div class="col-md-4">{% bootstrap_field form.time_to %}</div>
+                </div>
+                <div class="confirm-btn-box text-left">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </form>
+</div>
+{% endblock %}

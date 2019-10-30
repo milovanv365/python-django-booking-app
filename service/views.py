@@ -6,8 +6,8 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.contrib.auth.decorators import login_required
 
 import json
-from .forms import SignUpForm, NurseryForm
-from .models import City, Nursery
+from .forms import SignUpForm, NurseryForm, NurseryLimitForm
+from .models import City, Nursery, NurseryLimit
 
 
 def index(request):
@@ -79,11 +79,47 @@ def nursery_detail(request, c_slug, nursery_slug):
     return render(request, 'service/nursery.html', context)
 
 
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            user_type = form.cleaned_data.get('user_type')
+            signup_user = User.objects.get(username=username)
+            user_group = Group.objects.get(name=user_type)
+            user_group.user_set.add(signup_user)
+    else:
+        form = SignUpForm()
+    return render(request, 'accounts/signup.html', {'form': form})
+
+
+def signin_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('service:AllCity')
+            else:
+                return redirect('signup')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'accounts/signin.html', {'form': form})
+
+
+def signout_view(request):
+    logout(request)
+    return redirect('signin')
+
+
 @login_required
 def vendor_dashboard(request):
     current_user = request.user
-    # nursery_name_exist = False
-    # nursery_slug_exist = False
     nursery_name_or_slug_exist = False
 
     if request.method == 'POST':
@@ -198,7 +234,7 @@ def vendor_dashboard(request):
         'nursery_form': nursery_form,
         'nursery_name_or_slug_exist': nursery_name_or_slug_exist
     }
-    return render(request, 'service/vendor_dashboard.html', context)
+    return render(request, 'vendor/nursery_add.html', context)
 
 
 def nursery_update(nursery, nursery_form, price_plan, current_user):
@@ -217,39 +253,54 @@ def nursery_update(nursery, nursery_form, price_plan, current_user):
     nursery.save()
 
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            user_type = form.cleaned_data.get('user_type')
-            signup_user = User.objects.get(username=username)
-            user_group = Group.objects.get(name=user_type)
-            user_group.user_set.add(signup_user)
-    else:
-        form = SignUpForm()
-    return render(request, 'accounts/signup.html', {'form': form})
+@login_required
+def vendor_nursery_limit_list(request):
+    nursery_limits = NurseryLimit.objects.all()
+    context = {
+        'nursery_limits': nursery_limits
+    }
+    return render(request, 'vendor/nursery_limit_list.html', context)
 
 
-def signin_view(request):
+@login_required
+def vendor_nursery_limit_add(request):
+    nursery = Nursery.objects.get(user=request.user)
+    limit_exist = False
+    time_from_limit_exist = False
+    time_to_limit_exist = False
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = NurseryLimitForm(request.POST)
         if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('service:AllCity')
+            current_date = form.cleaned_data['date']
+            current_time_from = form.cleaned_data['time_from']
+            current_time_to = form.cleaned_data['time_to']
+            limit_check = NurseryLimit.objects.filter(date=current_date, time_from=current_time_from, time_to=current_time_to)
+            if len(limit_check) > 0:
+                limit_exist = True
             else:
-                return redirect('signup')
+                time_from_check = NurseryLimit.objects.filter(
+                    date=current_date, time_from__lte=current_time_from, time_to__gte=current_time_from
+                )
+                time_to_check = NurseryLimit.objects.filter(
+                    date=current_date, time_from__lte=current_time_to, time_to__gte=current_time_to
+                )
+
+                if len(time_from_check) > 0:
+                    time_from_limit_exist = True
+                elif len(time_to_check) > 0:
+                    time_to_limit_exist = True
+                else:
+                    nursery_limit = form.save(commit=False)
+                    nursery_limit.nursery = nursery
+                    nursery_limit.save()
+                    return redirect('service:VendorNurseryLimitAdd')
     else:
-        form = AuthenticationForm()
+        form = NurseryLimitForm()
 
-    return render(request, 'accounts/signin.html', {'form': form})
-
-
-def signoutView(request):
-    logout(request)
-    return redirect('signin')
+    context = {
+        'form': form,
+        'limit_exist': limit_exist,
+        'time_from_limit_exist': time_from_limit_exist,
+        'time_to_limit_exist': time_to_limit_exist
+    }
+    return render(request, 'vendor/nursery_limit_add.html', context)

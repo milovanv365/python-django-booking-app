@@ -1,13 +1,12 @@
 import json
 
 import stripe
-import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
-from django.http import JsonResponse
 
 from reservation.models import Reservation, Payment
 from service.models import Nursery
@@ -42,6 +41,7 @@ def reservation_add(request, nursery_id):
             reservation_check = Reservation.objects.filter(
                 user=current_user, nursery=nursery, start_date=start_date, start_time=start_time, price=price
             )
+
             if len(reservation_check) > 0:
                 reservation_exist = True
             else:

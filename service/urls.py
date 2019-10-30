@@ -7,6 +7,8 @@ urlpatterns = [
     path('', views.all_city, name='AllCity'),
     path('<slug:c_slug>/', views.city_detail, name='CityDetail'),
     path('<slug:c_slug>/<slug:nursery_slug>/', views.nursery_detail, name='NurseryDetail'),
-    path('vendor/dashboard', views.vendor_dashboard, name='VendorDashboard'),
     path('howto/', views.index, name='index'),
+    path('vendor/dashboard/nursery/add', views.vendor_dashboard, name='VendorDashboard'),
+    path('vendor/dashboard/nursery/limit/list', views.vendor_nursery_limit_list, name='VendorNurseryLimitList'),
+    path('vendor/dashboard/nursery/limit/add', views.vendor_nursery_limit_add, name='VendorNurseryLimitAdd'),
 ]

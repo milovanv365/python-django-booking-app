@@ -225,3 +225,9 @@ padding-bottom: 20px;
 .margin-top-main {
     margin-top: 50px;
 }
+.margin-bottom-main {
+    margin-bottom: 20px;
+}
+.margin-bottom-min {
+    margin-bottom: 6px;
+}

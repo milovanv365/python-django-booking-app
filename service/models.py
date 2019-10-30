@@ -24,13 +24,13 @@ class City(models.Model):
 class Nursery(models.Model):
     name = models.CharField(max_length=250, unique=True)
     slug = models.SlugField(max_length=250, unique=True)
+    price_plan = models.TextField(blank=True)
+    stock = models.IntegerField()
     description = models.TextField(blank=True)
     address = models.CharField(max_length=250, blank=True)
     telephone = models.CharField(max_length=250, blank=True)
     station = models.CharField(max_length=250, blank=True)
-    price_plan = models.TextField(blank=True)
     image = models.ImageField(upload_to='nursery', blank=True)
-    stock = models.IntegerField()
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
     available = models.BooleanField(default=True)
@@ -45,3 +45,18 @@ class Nursery(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
+
+
+class NurseryLimit(models.Model):
+    date = models.DateField()
+    time_from = models.IntegerField()
+    time_to = models.IntegerField()
+    nursery = models.ForeignKey(Nursery, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'nursery_limit'
+        ordering = ['date']
+
+    def _str_(self):
+        return self.date

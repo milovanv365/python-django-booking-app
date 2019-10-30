@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load staticfiles %}
+{% block title %}
+    Reservation History Detail - Travel Sitter
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="text-center">
+            <br>
+            <h1 class="text-center my_title">Reservation Limit</h1>
+            <br>
+            <div class="text-right margin-bottom-min"><a class="btn btn-primary" href="{% url 'service:VendorNurseryLimitAdd' %}">Add</a></div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Date</th>
+                    <th>TimeFrom</th>
+                    <th>TimeTo</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for nursery_limit in nursery_limits %}
+                     <tr>
+                         <td>{{ nursery_limit.id }}</td>
+                         <td>{{ nursery_limit.date|date:"d M Y" }}</td>
+                         <td>{{ nursery_limit.time_from }}</td>
+                         <td>{{ nursery_limit.time_to }}</td>
+                         <td><a href="{% url 'service:VendorNurseryLimitAdd' %}">Edit</a></td>
+                      </tr>
+                      {% endfor %}
+                </tbody>
+            </table>
+          </div>
+      </div>
+  {% endblock %}

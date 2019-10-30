@@ -1,7 +1,9 @@
+import datetime
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import City
+from .models import City, NurseryLimit
+from ericashop.helper import Helper
 
 
 cities = City.objects.all().order_by('id')
@@ -110,3 +112,38 @@ class NurseryForm(forms.Form):
         required=True,
         widget=forms.NumberInput(attrs={'placeholder': ''})
     )
+
+
+class NurseryLimitForm(forms.ModelForm):
+    date = forms.DateField(
+        label='',
+        required=True,
+        initial=datetime.date.today(),
+        input_formats=['%Y-%m-%d'],
+        widget=forms.DateInput(
+            attrs={
+                'type': "date",
+                "class": "js-start-date"
+            },
+        )
+    )
+    time_from = forms.ChoiceField(
+        label='',
+        widget=forms.Select,
+        choices=Helper.Time_CHOICES,
+        initial='9',
+        required=True
+    )
+    time_to = forms.ChoiceField(
+        label='',
+        widget=forms.Select,
+        choices=Helper.Time_CHOICES,
+        initial='23',
+        required=True
+    )
+
+    class Meta:
+        model = NurseryLimit
+        fields = (
+            'date', 'time_from', 'time_to'
+        )
