@@ -147,3 +147,9 @@ class NurseryLimitForm(forms.ModelForm):
         fields = (
             'date', 'time_from', 'time_to'
         )
+
+    def clean_date(self):
+        date = self.cleaned_data['date']
+        if date < datetime.date.today():
+            raise forms.ValidationError("The date cannot be in the past!")
+        return date

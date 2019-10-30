@@ -231,3 +231,15 @@ padding-bottom: 20px;
 .margin-bottom-min {
     margin-bottom: 6px;
 }
+.margin-right-main {
+    margin-right: 20px;
+}
+
+.reservation select.js-start-time option {
+    font-weight: bold;
+    color: #000000;
+}
+.reservation select.js-start-time option:disabled {
+    font-weight: lighter;
+    color: #495057;
+}

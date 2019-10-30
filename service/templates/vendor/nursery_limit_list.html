@@ -29,7 +29,7 @@
                          <td>{{ nursery_limit.date|date:"d M Y" }}</td>
                          <td>{{ nursery_limit.time_from }}</td>
                          <td>{{ nursery_limit.time_to }}</td>
-                         <td><a href="{% url 'service:VendorNurseryLimitAdd' %}">Edit</a></td>
+                         <td><a href="{% url 'service:VendorNurseryLimitEdit' nursery_limit.id %}">Edit</a></td>
                       </tr>
                       {% endfor %}
                 </tbody>

@@ -19,7 +19,7 @@ class ReservationForm(forms.ModelForm):
     )
     start_time = forms.ChoiceField(
         label='',
-        widget=forms.Select,
+        widget=forms.Select(attrs={"class": "js-start-time"}),
         choices=Helper.Time_CHOICES,
         initial='9',
         required=True
@@ -92,3 +92,10 @@ class ReservationForm(forms.ModelForm):
         if start_date < datetime.date.today():
             raise forms.ValidationError("The date cannot be in the past!")
         return start_date
+
+    # def clean_start_time(self):
+    #     start_time = self.cleaned_data['start_time']
+    #     if start_time == '':
+    #         raise forms.ValidationError("Nursery is unavailable on this day!")
+    #     return start_time
+

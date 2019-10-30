@@ -15,12 +15,6 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                {% if limit_exist %}
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>You already have the same limit. You can check nursery limit history.</strong>
-                </div>
-                {% endif %}
                 {% if time_from_limit_exist %}
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -44,7 +38,8 @@
                     <div class="col-md-4">{% bootstrap_field form.time_to %}</div>
                 </div>
                 <div class="confirm-btn-box text-left">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary margin-right-main">Save</button>
+                    <a class="btn btn-primary" href="{% url 'service:VendorNurseryLimitList' %}">Back</a>
                 </div>
             </div>
             <div class="col-md-2"></div>

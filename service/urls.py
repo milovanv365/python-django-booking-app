@@ -11,4 +11,5 @@ urlpatterns = [
     path('vendor/dashboard/nursery/add', views.vendor_dashboard, name='VendorDashboard'),
     path('vendor/dashboard/nursery/limit/list', views.vendor_nursery_limit_list, name='VendorNurseryLimitList'),
     path('vendor/dashboard/nursery/limit/add', views.vendor_nursery_limit_add, name='VendorNurseryLimitAdd'),
+    path('vendor/dashboard/nursery/limit/edit/<int:limit_id>', views.vendor_nursery_limit_edit, name='VendorNurseryLimitEdit'),
 ]

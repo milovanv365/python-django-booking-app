@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import get_template
 
 from reservation.models import Reservation, Payment
-from service.models import Nursery
+from service.models import Nursery, NurseryLimit
 from .forms import ReservationForm
 
 
@@ -233,6 +233,28 @@ def get_stock_per_date(request):
 
     data = {
         'stock': available_stock
+    }
+
+    return JsonResponse(data)
+
+
+def get_available_time_per_date(request):
+    target_date = request.GET.get('target_date', None)
+    nursery_id = request.GET.get('nursery_id', None)
+    nursery = Nursery.objects.get(id=nursery_id)
+
+    nursery_limits = NurseryLimit.objects.filter(nursery=nursery, date=target_date)
+    limit_data_array = []
+    for nursery_limit in nursery_limits:
+        limit_data = {
+            'time_from': nursery_limit.time_from,
+            'time_to': nursery_limit.time_to
+        }
+        limit_data_array.append(limit_data)
+
+        limit_data_json = json.dumps(limit_data_array)
+    data = {
+        'limit': limit_data_json
     }
 
     return JsonResponse(data)
