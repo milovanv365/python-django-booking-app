@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
     <div class="vendor-nursery">
-        <h1 class="title-label">Nursery Information</h1>
+        <h1 class="page-title">Nursery Information</h1>
         {% if nursery_name_or_slug_exist %}
             <div class="alert alert-danger">
                 <strong>Duplication! </strong> That name or slug already exist.
@@ -38,13 +38,6 @@
                 <div class="col-md-2">Stock</div>
                 <div class="col-md-4">{% bootstrap_field nursery_form.stock %}</div>
             </div>
-{#            {% bootstrap_field nursery_form.name %}#}
-{#            {% bootstrap_field nursery_form.slug %}#}
-{#            {% bootstrap_field nursery_form.description %}#}
-{#            {% bootstrap_field nursery_form.address %}#}
-{#            {% bootstrap_field nursery_form.telephone %}#}
-{#            {% bootstrap_field nursery_form.station %}#}
-{#            {% bootstrap_field nursery_form.city %}#}
 
             <div class="form-group">
                 <label class="control-label">Hourly Plan: </label>
@@ -73,7 +66,7 @@
 
             {% bootstrap_field nursery_form.image %}
 {#            {% bootstrap_field nursery_form.stock %}#}
-            <div class="alert alert-danger field-alert">
+            <div class="alert alert-danger display-none alert-choose-image">
                 <strong>Choose Image File! </strong>
             </div>
 
@@ -92,7 +85,7 @@
             let imgUrl = $('#id_image').siblings('a').text()
 
             if (imgSelectObj == '' && imgUrl == '') {
-                $('.field-alert').show()
+                $('.alert-choose-image').show()
                 return false
             }
         }

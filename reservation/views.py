@@ -1,11 +1,13 @@
 import json
 
 import stripe
+import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
+from django.http import JsonResponse
 
 from reservation.models import Reservation, Payment
 from service.models import Nursery
@@ -25,8 +27,6 @@ def reservation_add(request, nursery_id):
         return redirect('service:VendorDashboard')
 
     nursery = Nursery.objects.get(id=nursery_id)
-    nursery_img = nursery.image.url
-    nursery_name = nursery.name
 
     price_plans = json.loads(nursery.price_plan)
     price_plan_choices = [(price_plan['price'], price_plan['time']) for price_plan in price_plans]
@@ -38,6 +38,7 @@ def reservation_add(request, nursery_id):
             start_date = form.cleaned_data['start_date']
             start_time = form.cleaned_data['start_time']
             price = form.cleaned_data['price_plan']
+
             reservation_check = Reservation.objects.filter(
                 user=current_user, nursery=nursery, start_date=start_date, start_time=start_time, price=price
             )
@@ -45,8 +46,8 @@ def reservation_add(request, nursery_id):
                 reservation_exist = True
             else:
                 reservation = form.save(commit=False)
-                reservation.period = form.data['plan_hour']
-                reservation.price = form.cleaned_data['price_plan']
+                reservation.period = form.data['period']
+                reservation.price = form.data['total_price']
                 reservation.nursery = nursery
                 reservation.user = current_user
                 reservation.save()
@@ -59,9 +60,8 @@ def reservation_add(request, nursery_id):
 
     context = {
         'form': form,
-        'nursery_name': nursery_name,
-        'nursery_img': nursery_img,
-        'reservation_exist': reservation_exist
+        'nursery': nursery,
+        'reservation_exist': reservation_exist,
     }
     return render(request, 'reservation/add.html', context)
 
@@ -218,3 +218,21 @@ def history_detail(request, reservation_id):
         'payment': payment
     }
     return render(request, 'reservation/history_detail.html', context)
+
+
+def get_stock_per_date(request):
+    target_date = request.GET.get('target_date', None)
+    nursery_id = request.GET.get('nursery_id', None)
+
+    nursery = Nursery.objects.get(id=nursery_id)
+    reservations = Reservation.objects.filter(nursery=nursery, start_date=target_date)
+    reserved_child_number = 0
+    for reservation in reservations:
+        reserved_child_number += reservation.child_number
+    available_stock = nursery.stock - reserved_child_number
+
+    data = {
+        'stock': available_stock
+    }
+
+    return JsonResponse(data)

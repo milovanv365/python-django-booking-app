@@ -13,7 +13,7 @@
             <table>
                 <tr>
                     {% if payment is not None %}
-                    <td valign="top">
+                    <td valign="top" width="50%">
                         <h3>Your Address:</h3>
                         <p><b>Billing Name: </b>{{ payment.billingName }}<br></p>
                         <p><b>Billing Address: </b>{{ payment.billingAddress1 }}<br></p>
@@ -26,7 +26,7 @@
                         <p><b>Shipping PostCode: </b>{{ payment.shippingPostcode }}<br></p>
                         <p><b>Shipping Country: </b>{{ payment.shippingCountry }}<br></p>
                     </td>
-                    <td valign="top">
+                    <td valign="top" width="50%">
                         <h3>Payment:</h3>
                         <p><b>Number: </b>#{{ payment.id }}</p>
                         <p><b>Amount: </b>{{ payment.amount}}</p>
@@ -42,14 +42,14 @@
                     {% endif %}
                 </tr>
                 <tr>
-                    <td valign="top">
+                    <td valign="top" width="50%">
                         <h3>Nursery Information:</h3>
                         <p><b>Nursery Name: </b>{{ nursery.name }}</p>
                         <p><b>Nursery Slug: </b>{{ nursery.slug }}</p>
                         <p><b>Nursery Description: </b>{{ nursery.description }}<p>
                         <p><b>Nursery Stock: </b>{{ nursery.stock }}</p>
                     </td>
-                    <td valign="top">
+                    <td valign="top" width="50%">
                         <h3>Reservation Detail:</h3>
                         <p><b>Reservation Date: </b>{{ reservation.start_date }}<br/></p>
                         <p><b>Reservation Time: </b>{{ reservation.start_time }}:00<br/></p>
@@ -65,7 +65,7 @@
                     </td>
                 </tr>
             </table>
-            <div class="text-center">
+            <div class="text-center margin-top-main">
                 <button class="btn btn-secondary" onclick="window.print();"><i class="fas fa-print"></i>Print Order</button>
             </div>
         </div>

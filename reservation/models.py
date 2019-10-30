@@ -9,6 +9,7 @@ class Reservation(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
     child_age = models.IntegerField()
+    child_number = models.IntegerField()
     allergy = models.TextField(blank=True, null=True)
     vaccination = models.TextField(max_length=1000, blank=True, null=True)
     illness = models.TextField(blank=True, null=True)

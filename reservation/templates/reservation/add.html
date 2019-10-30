@@ -1,24 +1,28 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load bootstrap4 %}
+
 {% block title %}
-    Vendor Dashboard
+    Make a Reservation
 {% endblock %}
+
 {% block content %}
     <div class="reservation">
         <h1 class="my_title">Make a Reservation</h1>
         <div class="row text-center">
             <div class="col-md-3"></div>
             <div class="col-md-6">
-                <img class="nursery-photo" src="{{ nursery_img }}" style="width: 100%">
+                <img class="nursery-photo" src="{{ nursery.image.url }}" style="width: 100%">
+                <h2 class="nursery-name">{{ nursery.name }}</h2>
+                <h4 class="text-center">
+                    Available Capacity:
+                    <span class="js-available-stock"></span>
+                </h4>
             </div>
             <div class="col-md-3"></div>
         </div>
-        <div>
-            <h2 class="nursery-name">{{ nursery_name }}</h2>
-        </div>
 
-        <div class="reservation-form">
+        <div class="margin-top-main">
             {% if reservation_exist %}
             <div class="alert alert-info alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -27,6 +31,9 @@
             {% endif %}
             <form enctype="multipart/form-data" method="post" onsubmit="return goNext()">
                 {% csrf_token %}
+                <input type="hidden" id="nursery_id" value="{{ nursery.id }}">
+                <input type="hidden" name="period" id="period" value="">
+                <input type="hidden" name="total_price" id="total_price" value="">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6 row">
@@ -43,103 +50,147 @@
                         </div>
                     </div>
                 </div>
-                <input type="hidden" name="plan_hour" id="id_plan_hour" value="">
-                <div class="price-box clearfix">
+                <div class="total-price-box clearfix">
                     <p class="price float-left"></p>
                     <p class="float-left money-signal">USD</p>
                 </div>
-                <div class="form-group">
+                <div class="reservation-info">
                     <div class="row">
                         <div class="col-md-7 control-label">Your Name</div>
                         <div class="col-md-5">{% bootstrap_field form.name %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">Your Email</div>
                         <div class="col-md-5">{% bootstrap_field form.email %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">Age of your child</div>
                         <div class="col-md-5">{% bootstrap_field form.child_age %}</div>
                     </div>
-                </div>
-                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-7 control-label">Number of child</div>
+                        <div class="col-md-5">
+                            {% bootstrap_field form.child_number %}
+                            <div class="alert alert-danger alert-stock-exceed display-none">
+                                <strong>Child number exceed available capacity ! </strong>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-7 control-label">If have an allergy, fill in</div>
                         <div class="col-md-5">{% bootstrap_field form.allergy %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">If have not received a vaccination, fill in</div>
                         <div class="col-md-5">{% bootstrap_field form.vaccination %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">If do not want a hospital in an emergency, fill in</div>
                         <div class="col-md-5">{% bootstrap_field form.illness %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">If do not have travel insurance, fill in</div>
                         <div class="col-md-5">{% bootstrap_field form.travel_insurance %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">If smart phone is not available while traveling, fill in</div>
                         <div class="col-md-5">{% bootstrap_field form.wifi %}</div>
                     </div>
-                </div>
-                <div class="form-group">
                     <div class="row">
                         <div class="col-md-7 control-label">A postscript about your child. And, if you have an SNS that can contact, fill in</div>
                         <div class="col-md-5">{% bootstrap_field form.note %}</div>
                     </div>
-                </div>
-                <div>
-                    <input type="checkbox" name="service_terms_policy" class="service_terms_policy">
-                    <a href="">Service, Terms and Privacy Policy</a>
-                </div>
-                <div class="alert alert-danger field-alert">
-                    <strong>You must agreed with our service, terms and privacy policy! </strong>
-                </div>
-                <div class="text-center confirm-btn-box">
-                    <button type="submit" class="btn btn-secondary">Reserve here</button>
+                    <div>
+                        <input type="checkbox" name="service_terms_policy" class="service_terms_policy">
+                        <a href="">Service, Terms and Privacy Policy</a>
+                    </div>
+                    <div class="alert alert-danger alert-service-term display-none">
+                        <strong>You must agreed with our service, terms and privacy policy! </strong>
+                    </div>
+                    <div class="text-center confirm-btn-box">
+                        <button type="submit" class="btn btn-secondary">Reserve here</button>
+                    </div>
                 </div>
             </form>
         </div>
+        <div class="alert alert-info display-none alert-nursery-full">
+            <h4 class="text-center">Nursery is full for that day! You can reserve on another day or find another nursery</h4>
+        </div>
     </div>
+{% endblock %}
 
+
+{% block javascript %}
     <script>
         $(document).ready(function () {
-            setHourAndPrice()
+            setAvailableStock()
+            setPeriod()
+            setTotalPrice()
 
             $('#id_price_plan').change(function () {
-                setHourAndPrice()
+                setPeriod()
+                setTotalPrice()
             })
+
+            $('#id_child_number').keyup(function () {
+                setTotalPrice()
+            })
+
+            $('.js-start-date').change(function () {
+                $('.reservation-info').show();
+                $('.alert-nursery-full').hide();
+                setAvailableStock()
+            })
+
         })
 
-        function setHourAndPrice() {
+        function setAvailableStock() {
+            let target_date = $('.js-start-date').val();
+            let nursery_id = $('#nursery_id').val()
+            $.ajax({
+                url: 'ajax/stock_per_date/',
+                data: {
+                    'nursery_id': nursery_id,
+                    'target_date': target_date
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.stock)
+                    $('.js-available-stock').text(data.stock)
+                    if (data.stock < 1 ) {
+                        $('.reservation-info').hide();
+                        $('.alert-nursery-full').show();
+                    }
+                }
+            });
+        }
+
+        function setPeriod() {
             let period = $('#id_price_plan').children("option:selected").text()
-            let price = $('#id_price_plan').children("option:selected").val()
-            $('#id_plan_hour').val(period)
-            $('.price-box .price').text(price)
+            $('#period').val(period)
+        }
+
+        function setTotalPrice() {
+            let unit_price = parseInt($('#id_price_plan').children("option:selected").val())
+            let amount = $('#id_child_number').val() !== '' ? parseInt($('#id_child_number').val()) : 1
+            let total_price = unit_price * amount
+
+            $('.total-price-box .price').text(total_price)
+            $('#total_price').val(total_price)
         }
 
         function goNext() {
+            let stock = parseInt($('.js-available-stock').text())
+            let child_number = parseInt($('#id_child_number').val())
+            if (child_number > stock) {
+                $('.alert-stock-exceed').show()
+                return false
+            }
             let agreed = $('.service_terms_policy').is(':checked')
             if (!agreed) {
-                $('.field-alert').show()
+                $('.alert-service-term').show()
                 return false
             }
         }
     </script>
-
-
 {% endblock %}
