@@ -25,7 +25,7 @@
                      {% for reservation in reservations %}
                      <tr>
                          <td>{{ reservation.id }}</td>
-                         <td>{{ reservation.created_at|date:"d M Y" }}</td>
+                         <td>{{ reservation.start_date|date:"d M Y" }}</td>
                          <td>{{ reservation.price }}</td>
                          <td>
                              {% if reservation.paymentStatus == "Payed" %}
