@@ -313,23 +313,24 @@ def vendor_nursery_limit_edit(request, limit_id):
             current_time_from = form.cleaned_data['time_from']
             current_time_to = form.cleaned_data['time_to']
 
-            limit_check = NurseryLimit.objects.filter(date=current_date)
-            time_from_check = NurseryLimit.objects.filter(
-                date=current_date, time_from__lte=current_time_from, time_to__gte=current_time_from
-            )
-            time_to_check = NurseryLimit.objects.filter(
-                date=current_date, time_from__lte=current_time_to, time_to__gte=current_time_to
-            )
-
-            if len(time_from_check) > 0:
-                time_from_limit_exist = True
-            elif len(time_to_check) > 0:
-                time_to_limit_exist = True
-            else:
-                nursery_limit = form.save(commit=False)
-                nursery_limit.nursery = nursery
-                nursery_limit.save()
-                return redirect('service:VendorNurseryLimitAdd')
+            # limit_check = NurseryLimit.objects.filter(date=current_date)
+            # time_from_check = NurseryLimit.objects.filter(
+            #     date=current_date, time_from__lte=current_time_from, time_to__gte=current_time_from
+            # )
+            # time_to_check = NurseryLimit.objects.filter(
+            #     date=current_date, time_from__lte=current_time_to, time_to__gte=current_time_to
+            # )
+            #
+            # if len(time_from_check) > 0:
+            #     time_from_limit_exist = True
+            # elif len(time_to_check) > 0:
+            #     time_to_limit_exist = True
+            # else:
+            nursery_limit.date = current_date
+            nursery_limit.time_from = current_time_from
+            nursery_limit.time_to = current_time_to
+            nursery_limit.save()
+            return redirect('service:VendorNurseryLimitList')
     else:
         form = NurseryLimitForm()
         form.initial = {
@@ -344,3 +345,9 @@ def vendor_nursery_limit_edit(request, limit_id):
         'time_to_limit_exist': time_to_limit_exist
     }
     return render(request, 'vendor/nursery_limit_add.html', context)
+
+
+def vendor_nursery_limit_delete(request, limit_id):
+    NurseryLimit.objects.get(id=limit_id).delete()
+
+    return redirect('service:VendorNurseryLimitList')

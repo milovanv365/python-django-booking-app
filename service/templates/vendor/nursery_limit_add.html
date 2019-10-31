@@ -15,16 +15,22 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
+{#                {% if limit_exist %}#}
+{#                <div class="alert alert-danger alert-dismissible">#}
+{#                    <button type="button" class="close" data-dismiss="alert">&times;</button>#}
+{#                    <strong>You already have the same limit. You can check nursery limit history.</strong>#}
+{#                </div>#}
+{#                {% endif %}#}
                 {% if time_from_limit_exist %}
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Time(from) is in a limit range that already exists.</strong>
+                    <strong>Time(From) is in a limit range that already exists.</strong>
                 </div>
                 {% endif %}
                 {% if time_to_limit_exist %}
                 <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Time(from) is in a limit range that already exists.</strong>
+                    <strong>Time(To) is in a limit range that already exists.</strong>
                 </div>
                 {% endif %}
                 <div class="row form-group">

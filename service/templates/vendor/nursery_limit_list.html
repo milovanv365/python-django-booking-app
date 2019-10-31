@@ -27,9 +27,12 @@
                      <tr>
                          <td>{{ nursery_limit.id }}</td>
                          <td>{{ nursery_limit.date|date:"d M Y" }}</td>
-                         <td>{{ nursery_limit.time_from }}</td>
-                         <td>{{ nursery_limit.time_to }}</td>
-                         <td><a href="{% url 'service:VendorNurseryLimitEdit' nursery_limit.id %}">Edit</a></td>
+                         <td>{{ nursery_limit.time_from }} : 00</td>
+                         <td>{{ nursery_limit.time_to }} : 00</td>
+                         <td>
+                             <a href="{% url 'service:VendorNurseryLimitEdit' nursery_limit.id %}" class="btn btn-info">Edit</a>
+                             <a href="{% url 'service:VendorNurseryLimitDelete' nursery_limit.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item from the database?')">Delete</a>
+                         </td>
                       </tr>
                       {% endfor %}
                 </tbody>
@@ -37,3 +40,15 @@
           </div>
       </div>
   {% endblock %}
+
+{% block javascript %}
+    <script>
+        function deleteLimitRecord(nursery_limit_id){
+            if (confirm('Are you sure you want to delete this item from the database?')) {
+                {#window.document.location.href = {% url 'service:VendorNurseryLimitDelete' %}'#}
+            } else {
+                // Do nothing!
+            }
+        }
+    </script>
+{% endblock %}
