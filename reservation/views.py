@@ -296,7 +296,7 @@ def history_detail(request, reservation_id):
         'nursery': nursery,
         'payment': payment
     }
-    return render(request, 'reservation/history_detail.html', context)
+    return render(request, 'reservation/detail.html', context)
 
 
 def history_delete(request, reservation_id):

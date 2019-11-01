@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from .forms import SignUpForm, NurseryForm, NurseryLimitForm
 from .models import City, Nursery, NurseryLimit
+from reservation.models import Reservation, Payment
 
 
 def index(request):
@@ -303,6 +304,7 @@ def vendor_nursery_limit_add(request):
 def vendor_nursery_limit_edit(request, limit_id):
     nursery_limit = NurseryLimit.objects.get(id=limit_id)
     nursery = Nursery.objects.get(user=request.user)
+
     time_from_limit_exist = False
     time_to_limit_exist = False
 
@@ -351,3 +353,15 @@ def vendor_nursery_limit_delete(request, limit_id):
     NurseryLimit.objects.get(id=limit_id).delete()
 
     return redirect('service:VendorNurseryLimitList')
+
+
+def vendor_nursery_reservation_list(request):
+    nursery = Nursery.objects.get(user=request.user)
+    reservations = Reservation.objects.filter(nursery=nursery)
+    for reservation in reservations:
+        customer = User.objects.get(id=reservation.user_id)
+        reservation.customer = customer
+    context = {
+        'reservations': reservations,
+    }
+    return render(request, 'vendor/nursery_reservation_list.html', context)

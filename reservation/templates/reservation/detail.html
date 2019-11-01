@@ -36,8 +36,7 @@
                     {% else %}
                     <td colspan="2">
                         <h3>Payment Detail:</h3>
-                        <p>You haven't payed yet.</p>
-                        <p>If you want to pay for this reservation click <a href="{% url 'reservation:ReservationConfirm' reservation.id %}">here</a></p>
+                        <p>Payment does't exist for this reservation!</p>
                     </td>
                     {% endif %}
                 </tr>
@@ -67,7 +66,7 @@
             </table>
             <div class="text-center confirm-btn-box">
                 <button class="btn btn-secondary" onclick="window.print();"><i class="fas fa-print"></i>Print Order</button>
-                <a class="btn btn-secondary" href="{% url 'reservation:ReservationHistoryList' %}">back</a>
+                <button class="btn btn-secondary" onclick="window.history.back()">back</button>
             </div>
         </div>
     </div>

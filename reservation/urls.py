@@ -10,7 +10,7 @@ urlpatterns = [
     path('transaction/<int:reservation_id>', views.reservation_transaction, name='ReservationConfirm'),
     path('completed/<int:reservation_id>', views.reservation_completed, name='ReservationCompleted'),
     path('history/list', views.history_list, name='ReservationHistoryList'),
-    path('history/detail/<int:reservation_id>', views.history_detail, name='ReservationHistoryDetail'),
+    path('detail/<int:reservation_id>', views.history_detail, name='ReservationDetail'),
     path('history/delete/<int:reservation_id>', views.history_delete, name='ReservationHistoryDelete'),
     path('add/ajax/stock_per_date', views.get_stock_per_date),
     path('add/ajax/available-time-per-date', views.get_available_time_per_date),
