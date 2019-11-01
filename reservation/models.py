@@ -6,9 +6,12 @@ from service.models import Nursery
 class Reservation(models.Model):
     start_date = models.DateField(blank=True)
     start_time = models.CharField(max_length=10)
+    period = models.CharField(max_length=50, blank=True, null=True)
+    price_plan = models.CharField(max_length=50, blank=True, null=True)
+    price_total = models.CharField(max_length=50, blank=True, null=True)
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)
-    child_age = models.IntegerField()
+    child_age = models.CharField(max_length=200, null=True)
     child_number = models.IntegerField()
     allergy = models.TextField(blank=True, null=True)
     vaccination = models.TextField(max_length=1000, blank=True, null=True)
@@ -16,8 +19,6 @@ class Reservation(models.Model):
     travel_insurance = models.TextField(blank=True, null=True)
     wifi = models.TextField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
-    period = models.CharField(max_length=50, blank=True, null=True)
-    price = models.CharField(max_length=50, blank=True, null=True)
     paymentStatus = models.CharField(max_length=50, default='NotPayed')
     created_at = models.DateTimeField(auto_now_add=True)
 

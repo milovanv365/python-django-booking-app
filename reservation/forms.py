@@ -39,14 +39,16 @@ class ReservationForm(forms.ModelForm):
     )
     child_age = forms.CharField(
         label='',
-        max_length=10,
+        max_length=1,
+        initial=2,
+        required=False,
         widget=forms.NumberInput()
     )
     child_number = forms.CharField(
         label='',
-        max_length=10,
+        max_length=1,
         initial='1',
-        widget=forms.NumberInput()
+        widget=forms.NumberInput(attrs={"min": 1, "max": 99})
     )
     allergy = forms.CharField(
         label='',
@@ -83,7 +85,7 @@ class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
         fields = (
-            'start_date', 'start_time', 'price_plan', 'name', 'email', 'child_age', 'child_number', 'allergy',
+            'start_date', 'start_time', 'price_plan', 'price_total', 'name', 'email', 'child_age', 'child_number', 'allergy',
             'vaccination', 'illness', 'travel_insurance', 'wifi', 'note'
         )
 
@@ -92,6 +94,10 @@ class ReservationForm(forms.ModelForm):
         if start_date < datetime.date.today():
             raise forms.ValidationError("The date cannot be in the past!")
         return start_date
+
+    # def clean_price_plan(self):
+    #     price_plan = self.cleaned_data['price_plan']
+    #     return price_plan
 
     # def clean_start_time(self):
     #     start_time = self.cleaned_data['start_time']

@@ -36,18 +36,20 @@ def reservation_add(request, nursery_id):
         if form.is_valid():
             start_date = form.cleaned_data['start_date']
             start_time = form.cleaned_data['start_time']
-            price = form.cleaned_data['price_plan']
+            price_total = form.data['total_price']
 
             reservation_check = Reservation.objects.filter(
-                user=current_user, nursery=nursery, start_date=start_date, start_time=start_time, price=price
+                user=current_user, nursery=nursery, start_date=start_date,
+                start_time=start_time, price_total=price_total
             )
 
             if len(reservation_check) > 0:
                 reservation_exist = True
             else:
                 reservation = form.save(commit=False)
+                reservation.child_age = form.data['children_age']
                 reservation.period = form.data['period']
-                reservation.price = form.data['total_price']
+                reservation.price_total = form.data['total_price']
                 reservation.nursery = nursery
                 reservation.user = current_user
                 reservation.save()
@@ -57,6 +59,8 @@ def reservation_add(request, nursery_id):
     else:
         form = ReservationForm()
         form.fields['price_plan'].choices = price_plan_choices
+        # if len(price_plan_choices) > 0:
+        #     form.fields['price_plan'].initial = price_plan_choices[0]
 
     context = {
         'form': form,
@@ -64,6 +68,81 @@ def reservation_add(request, nursery_id):
         'reservation_exist': reservation_exist,
     }
     return render(request, 'reservation/add.html', context)
+
+
+def reservation_edit(request, reservation_id):
+    current_user = request.user
+
+    if current_user.is_authenticated is False:
+        return redirect('signin')
+
+    user_type = current_user.groups.get(user=current_user).name
+
+    if user_type == 'Vendor':
+        return redirect('service:VendorDashboard')
+
+    reservation = Reservation.objects.get(id=reservation_id)
+    payment_status = False
+    if reservation.paymentStatus == 'Payed':
+        payment_status = True
+        return redirect('reservation:ReservationHistoryList')
+
+    nursery = Nursery.objects.get(id=reservation.nursery_id)
+
+    price_plans = json.loads(nursery.price_plan)
+    price_plan_choices = [(price_plan['price'], price_plan['time']) for price_plan in price_plans]
+
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        form.fields['price_plan'].choices = price_plan_choices
+        if form.is_valid():
+            reservation.start_date = form.cleaned_data['start_date']
+            reservation.start_time = form.cleaned_data['start_time']
+            reservation.price_plan = form.cleaned_data['price_plan']
+            reservation.name = form.cleaned_data['name']
+            reservation.email = form.cleaned_data['email']
+            reservation.child_number = form.cleaned_data['child_number']
+            reservation.allergy = form.cleaned_data['allergy']
+            reservation.vaccination = form.cleaned_data['vaccination']
+            reservation.illness = form.cleaned_data['illness']
+            reservation.travel_insurance = form.cleaned_data['travel_insurance']
+            reservation.wifi = form.cleaned_data['wifi']
+            reservation.note = form.cleaned_data['note']
+
+            reservation.child_age = form.data['children_age']
+            reservation.period = form.data['period']
+            reservation.price_total = form.data['total_price']
+            reservation.nursery = nursery
+            reservation.user = current_user
+            reservation.save()
+
+            reservation_id = reservation.id
+            return redirect('reservation:ReservationConfirm', reservation_id)
+    else:
+        form = ReservationForm()
+        form.fields['price_plan'].choices = price_plan_choices
+        form.initial = {
+            'start_date': reservation.start_date,
+            'start_time': reservation.start_time,
+            'price_plan': reservation.price_plan,
+            'name': reservation.name,
+            'email': reservation.email,
+            'child_number': reservation.child_number,
+            'child_age': reservation.child_age,
+            'allergy': reservation.allergy,
+            'vaccination': reservation.vaccination,
+            'illness': reservation.illness,
+            'travel_insurance': reservation.travel_insurance,
+            'wifi': reservation.wifi,
+            'note': reservation.note,
+        }
+
+    context = {
+        'form': form,
+        'nursery': nursery,
+        'payment_status': payment_status
+    }
+    return render(request, 'reservation/edit.html', context)
 
 
 def reservation_transaction(request, reservation_id):
@@ -87,7 +166,7 @@ def reservation_transaction(request, reservation_id):
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
     data_key = settings.STRIPE_PUBLISHABLE_KEY
-    reservation_price = reservation.price
+    reservation_price = reservation.price_total
     stripe_total = int(reservation_price) * 100
     description = 'Travel Sitter - Reserve'
 
@@ -220,6 +299,12 @@ def history_detail(request, reservation_id):
     return render(request, 'reservation/history_detail.html', context)
 
 
+def history_delete(request, reservation_id):
+    Reservation.objects.get(id=reservation_id).delete()
+
+    return redirect('reservation:ReservationHistoryList')
+
+
 def get_stock_per_date(request):
     target_date = request.GET.get('target_date', None)
     nursery_id = request.GET.get('nursery_id', None)
@@ -252,7 +337,8 @@ def get_available_time_per_date(request):
         }
         limit_data_array.append(limit_data)
 
-        limit_data_json = json.dumps(limit_data_array)
+    limit_data_json = json.dumps(limit_data_array)
+
     data = {
         'limit': limit_data_json
     }

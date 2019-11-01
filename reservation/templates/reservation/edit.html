@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="reservation">
-        <h1 class="my_title">Make a Reservation</h1>
+        <h1 class="my_title">Edit your Reservation</h1>
         <div class="row text-center">
             <div class="col-md-3"></div>
             <div class="col-md-6">
@@ -21,14 +21,7 @@
             </div>
             <div class="col-md-3"></div>
         </div>
-
         <div class="margin-top-main">
-            {% if reservation_exist %}
-            <div class="alert alert-warning alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>You already have the same reservation. Check your reservation history, please</strong>
-            </div>
-            {% endif %}
             <form enctype="multipart/form-data" method="post" onsubmit="return goNext()">
                 {% csrf_token %}
                 <input type="hidden" id="nursery_id" value="{{ nursery.id }}">
@@ -113,9 +106,9 @@
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="alert alert-info display-none alert-nursery-full">
-            <h4 class="text-center">Nursery is full for that day! You can reserve on another day or find another nursery</h4>
+            <div class="alert alert-info display-none alert-nursery-full">
+                <h4 class="text-center">Nursery is full for that day! You can reserve on another day or find another nursery</h4>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -128,6 +121,7 @@
             setAvailableDateTime()
             setPeriod()
             setTotalPrice()
+            initChildrenAgeField()
 
             $('#id_price_plan').change(function () {
                 setPeriod()
@@ -258,11 +252,26 @@
                 let i
                 let elem = '<div class="row">'
                 for (i = 0; i < child_number ; i++) {
-                    elem += '<input type="number" maxlength="10" class="form-control col-md-3" required id="id_child_age_' + i + '">'
+                    elem += '<input type="number" maxlength="10" class="form-control" required id="id_child_age_' + i + '">'
                 }
                 elem += '</div>'
                 childrenField.append(elem)
             }
+        }
+
+        function initChildrenAgeField() {
+            let ages = $('#id_child_age').attr('value').split(', ')
+             if (ages.length > 1) {
+                let elem = '<div class="row">', i
+                for (i = 0; i < ages.length ; i++) {
+                    let age = ages[i]
+                    elem += '<input type="number" maxlength="10" class="form-control" required id="id_child_age_' + i + '" value="' + age + '">'
+                }
+                elem += '</div>'
+                let childrenField = $('#child_age_box .form-group')
+                childrenField.empty()
+                childrenField.append(elem)
+             }
         }
 
         function goNext() {
