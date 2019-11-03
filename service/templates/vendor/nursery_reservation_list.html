@@ -19,6 +19,7 @@
                         <th>Reservation Date</th>
                         <th>Reservation Amount (USD)</th>
                         <th>Status</th>
+                        <th>Creation Date</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -27,7 +28,7 @@
                         <tr>
                             <td>{{ reservation.id }}</td>
                             <td>{{ reservation.customer.username }}</td>
-                            <td>{{ reservation.start_date|date:"d M Y" }}</td>
+                            <td>{{ reservation.start_date|date:"Y-m-d" }}</td>
                             <td>{{ reservation.price_total }}</td>
                             <td>
                                 {% if reservation.paymentStatus == "Payed" %}
@@ -36,6 +37,7 @@
                                     NotPayed
                                 {% endif %}
                             </td>
+                            <td>{{ reservation.created_at|date:"Y-m-d" }}</td>
                             <td>
                                 <a href="{% url 'reservation:ReservationDetail' reservation.id %}" class="btn btn-primary">View</a>
                             </td>

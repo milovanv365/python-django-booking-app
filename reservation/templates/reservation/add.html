@@ -183,9 +183,6 @@
                 dataType: 'json',
                 success: function (data) {
                     let limits = JSON.parse(data.limit)
-
-                    if (limits.length < 1) return
-
                     let time_choices = [
                         {'val': '0', 'label': '00:00'},
                         {'val': '1', 'label': '01:00'},
@@ -212,8 +209,23 @@
                         {'val': '22', 'label': '22:00'},
                         {'val': '23', 'label': '23:00'},
                     ]
+                    let start_time_value = parseInt($('.js-start-time').val())
+                    let start_time_elem = $('.js-start-time')
+                    start_time_elem.empty()
 
                     let options = ''
+                    if (limits.length < 1) {
+                        $.each(time_choices, function (idx, time_choice) {
+                            let time_choice_value = parseInt(time_choice.val)
+                            let selected = ''
+                            if (time_choice_value == start_time_value) selected = 'selected'
+                            options += "<option value=" + time_choice_value + " " + selected + ">" + time_choice.label + "</option>"
+                        })
+                        start_time_elem.append(options)
+                        return
+                    }
+
+                    options = ''
                     $.each(time_choices, function (idx, time_choice) {
                         let disabled = ''
                         let time_choice_value = parseInt(time_choice.val)
@@ -226,11 +238,11 @@
                             }
                         })
 
-                        options += "<option " + disabled + ">" + time_choice.label + "</option>"
+                        let selected = ''
+                        if (time_choice_value == start_time_value) selected = 'selected'
+                        options += "<option value=" + time_choice_value + " " + disabled + " " + selected + ">" + time_choice.label + "</option>"
                     })
 
-                    let start_time_elem = $('.js-start-time')
-                    start_time_elem.empty()
                     start_time_elem.append(options)
                 }
             });

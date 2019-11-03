@@ -165,8 +165,9 @@
         }
 
         function setAvailableDateTime() {
-            let target_date = $('.js-start-date').val();
+            let target_date = $('.js-start-date').val()
             let nursery_id = $('#nursery_id').val()
+
             $.ajax({
                 url: 'ajax/available-time-per-date',
                 data: {
@@ -208,6 +209,7 @@
                     ]
 
                     let options = ''
+                    let start_time_value = parseInt($('.js-start-time').val())
                     $.each(time_choices, function (idx, time_choice) {
                         let disabled = ''
                         let time_choice_value = parseInt(time_choice.val)
@@ -219,8 +221,9 @@
                                 return
                             }
                         })
-
-                        options += "<option " + disabled + ">" + time_choice.label + "</option>"
+                        let selected = ''
+                        if (time_choice_value == start_time_value) selected = 'selected'
+                        options += "<option value=" + time_choice_value + " " + disabled + " " + selected + ">" + time_choice.label + "</option>"
                     })
 
                     let start_time_elem = $('.js-start-time')
@@ -261,7 +264,7 @@
 
         function initChildrenAgeField() {
             let ages = $('#id_child_age').attr('value').split(', ')
-             if (ages.length > 1) {
+            if (ages.length > 1) {
                 let elem = '<div class="row">', i
                 for (i = 0; i < ages.length ; i++) {
                     let age = ages[i]
@@ -271,7 +274,7 @@
                 let childrenField = $('#child_age_box .form-group')
                 childrenField.empty()
                 childrenField.append(elem)
-             }
+            }
         }
 
         function goNext() {

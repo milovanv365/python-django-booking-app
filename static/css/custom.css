@@ -239,6 +239,10 @@ padding-bottom: 20px;
     margin-left: 1%;
     margin-right: 1%;
 }
+.content-empty-label {
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
 
 <!-- Global -->
 .margin-top-main {

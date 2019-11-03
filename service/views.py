@@ -256,7 +256,8 @@ def nursery_update(nursery, nursery_form, price_plan, current_user):
 
 @login_required
 def vendor_nursery_limit_list(request):
-    nursery_limits = NurseryLimit.objects.all()
+    nursery = Nursery.objects.get(user=request.user)
+    nursery_limits = NurseryLimit.objects.filter(nursery=nursery)
     context = {
         'nursery_limits': nursery_limits
     }
@@ -275,10 +276,10 @@ def vendor_nursery_limit_add(request):
             current_time_from = form.cleaned_data['time_from']
             current_time_to = form.cleaned_data['time_to']
             time_from_check = NurseryLimit.objects.filter(
-                date=current_date, time_from__lte=current_time_from, time_to__gte=current_time_from
+                nursery=nursery, date=current_date, time_from__lte=current_time_from, time_to__gte=current_time_from
             )
             time_to_check = NurseryLimit.objects.filter(
-                date=current_date, time_from__lte=current_time_to, time_to__gte=current_time_to
+                nursery=nursery, date=current_date, time_from__lte=current_time_to, time_to__gte=current_time_to
             )
 
             if len(time_from_check) > 0:
@@ -301,9 +302,9 @@ def vendor_nursery_limit_add(request):
     return render(request, 'vendor/nursery_limit_add.html', context)
 
 
+@login_required
 def vendor_nursery_limit_edit(request, limit_id):
     nursery_limit = NurseryLimit.objects.get(id=limit_id)
-    nursery = Nursery.objects.get(user=request.user)
 
     time_from_limit_exist = False
     time_to_limit_exist = False
@@ -349,12 +350,14 @@ def vendor_nursery_limit_edit(request, limit_id):
     return render(request, 'vendor/nursery_limit_add.html', context)
 
 
+@login_required
 def vendor_nursery_limit_delete(request, limit_id):
     NurseryLimit.objects.get(id=limit_id).delete()
 
     return redirect('service:VendorNurseryLimitList')
 
 
+@login_required
 def vendor_nursery_reservation_list(request):
     nursery = Nursery.objects.get(user=request.user)
     reservations = Reservation.objects.filter(nursery=nursery)

@@ -7,7 +7,6 @@ from ericashop.helper import Helper
 class ReservationForm(forms.ModelForm):
     start_date = forms.DateField(
         label='',
-        required=True,
         initial=datetime.date.today(),
         input_formats=['%Y-%m-%d'],
         widget=forms.DateInput(
@@ -21,8 +20,7 @@ class ReservationForm(forms.ModelForm):
         label='',
         widget=forms.Select(attrs={"class": "js-start-time"}),
         choices=Helper.Time_CHOICES,
-        initial='9',
-        required=True
+        initial='8'
     )
     price_plan = forms.ChoiceField(
         label='',
@@ -37,18 +35,18 @@ class ReservationForm(forms.ModelForm):
         label='',
         max_length=200,
     )
-    child_age = forms.CharField(
-        label='',
-        max_length=1,
-        initial=2,
-        required=False,
-        widget=forms.NumberInput()
-    )
     child_number = forms.CharField(
         label='',
         max_length=1,
         initial='1',
         widget=forms.NumberInput(attrs={"min": 1, "max": 99})
+    )
+    child_age = forms.CharField(
+        label='',
+        max_length=1,
+        initial=0,
+        required=False,
+        widget=forms.NumberInput()
     )
     allergy = forms.CharField(
         label='',
@@ -85,7 +83,7 @@ class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
         fields = (
-            'start_date', 'start_time', 'price_plan', 'price_total', 'name', 'email', 'child_age', 'child_number', 'allergy',
+            'start_date', 'start_time', 'price_plan', 'price_total', 'name', 'email', 'child_number', 'child_age',  'allergy',
             'vaccination', 'illness', 'travel_insurance', 'wifi', 'note'
         )
 

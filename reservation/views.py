@@ -70,6 +70,7 @@ def reservation_add(request, nursery_id):
     return render(request, 'reservation/add.html', context)
 
 
+@login_required
 def reservation_edit(request, reservation_id):
     current_user = request.user
 
@@ -145,6 +146,7 @@ def reservation_edit(request, reservation_id):
     return render(request, 'reservation/edit.html', context)
 
 
+@login_required
 def reservation_transaction(request, reservation_id):
     current_user = request.user
     payment_exist = False
@@ -275,6 +277,7 @@ def history_list(request):
     return render(request, 'reservation/history_list.html', context)
 
 
+@login_required
 def history_detail(request, reservation_id):
     try:
         reservation = Reservation.objects.get(id=reservation_id)
@@ -299,6 +302,7 @@ def history_detail(request, reservation_id):
     return render(request, 'reservation/detail.html', context)
 
 
+@login_required
 def history_delete(request, reservation_id):
     Reservation.objects.get(id=reservation_id).delete()
 

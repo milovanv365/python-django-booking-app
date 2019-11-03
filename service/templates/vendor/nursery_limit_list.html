@@ -2,20 +2,22 @@
 {% load bootstrap4 %}
 {% load staticfiles %}
 {% block title %}
-    Reservation History Detail - Travel Sitter
+    Nursery Limit - Travel Sitter
 {% endblock %}
 
 {% block content %}
     <div>
         <div class="text-center">
             <br>
-            <h1 class="text-center my_title">Reservation Limit</h1>
+            <h1 class="text-center my_title">Nursery Limit</h1>
             <br>
-            <div class="text-right margin-bottom-min"><a class="btn btn-primary" href="{% url 'service:VendorNurseryLimitAdd' %}">Add</a></div>
+            <div class="text-right margin-bottom-min">
+                <a class="btn btn-primary" href="{% url 'service:VendorNurseryLimitAdd' %}">Add</a>
+            </div>
+            {% if nursery_limits %}
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Date</th>
                     <th>TimeFrom</th>
                     <th>TimeTo</th>
@@ -25,7 +27,6 @@
                 <tbody>
                     {% for nursery_limit in nursery_limits %}
                      <tr>
-                         <td>{{ nursery_limit.id }}</td>
                          <td>{{ nursery_limit.date|date:"d M Y" }}</td>
                          <td>{{ nursery_limit.time_from }} : 00</td>
                          <td>{{ nursery_limit.time_to }} : 00</td>
@@ -37,6 +38,9 @@
                       {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <h3 class="text-center content-empty-label">There is not any nursery limitation</h3>
+            {% endif %}
           </div>
       </div>
   {% endblock %}

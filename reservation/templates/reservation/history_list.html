@@ -16,6 +16,7 @@
                     <tr>
                         <th>Reservation Number</th>
                         <th>Reservation Date</th>
+                        <th>Start Time</th>
                         <th>Reservation Amount (USD)</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -26,7 +27,8 @@
                         <tr>
                             <td>{{ reservation.id }}</td>
                             <td>{{ reservation.start_date|date:"d M Y" }}</td>
-                            <td>{{ reservation.price }}</td>
+                            <td>{{ reservation.start_time }} : 00</td>
+                            <td>{{ reservation.price_total }}</td>
                             <td>
                                 {% if reservation.paymentStatus == "Payed" %}
                                     <i class="fas fa-check"></i>&nbsp;Complete

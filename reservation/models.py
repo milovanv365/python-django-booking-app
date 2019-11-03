@@ -27,7 +27,7 @@ class Reservation(models.Model):
 
     class Meta:
         db_table = 'Reservation'
-        ordering = ['-created_at']
+        ordering = ['created_at']
 
     def _str_(self):
         return self.name
