@@ -224,11 +224,15 @@ padding-bottom: 20px;
 }
 
 
-.reservation select.js-start-time option {
+.reservation select.js-start-time option,
+.reservation select#id_price_plan option
+{
     font-weight: bold;
     color: #000000;
 }
-.reservation select.js-start-time option:disabled {
+.reservation select.js-start-time option:disabled,
+.reservation select#id_price_plan option:disabled
+{
     font-weight: lighter;
     color: #495057;
 }
@@ -243,8 +247,19 @@ padding-bottom: 20px;
     margin-top: 50px;
     margin-bottom: 30px;
 }
+.price-plan-box {
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+.price-plan-item {
+    margin: 10px 0;
+}
+.price-plan-box .price-plan-item button {
+    width: 40px;
+    height: 40px;
+}
 
-<!-- Global -->
+
 .margin-top-main {
     margin-top: 50px;
 }

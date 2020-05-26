@@ -141,7 +141,56 @@
                 setAvailableDateTime()
             })
 
+            $('.js-start-time').change(function () {
+                setAvailablePricePlan()
+            })
         })
+
+        function setAvailablePricePlan() {
+            console.log('sss')
+            let start_time = parseInt($('.js-start-time').val())
+            console.log(start_time)
+            let unavailable_time_list = []
+            let unavailable_time_elements = $('.js-start-time').find('option:disabled')
+            console.log(unavailable_time_elements.length)
+            $.each(unavailable_time_elements, function (idx, element) {
+                let unavailable_time = parseInt($(element).val())
+                unavailable_time_list[idx] = unavailable_time
+            })
+
+            if (unavailable_time_list.length < 1) return
+
+            let time_delta = 0
+            $.each(unavailable_time_list, function (idx, unavailable_time) {
+                if (unavailable_time > start_time) {
+                    time_delta = unavailable_time - start_time
+
+                    return false
+                }
+            })
+
+            console.log(time_delta)
+
+            let price_pan_option_elements = $('#id_price_plan').find('option')
+            let price_plan_list = []
+
+            $.each(price_pan_option_elements, function (idx, price_plan_option_element) {
+                let plan_time = $(price_plan_option_element).text()
+                let plan_price = $(price_plan_option_element).val()
+                let plan_obj = {'plan_time': plan_time, 'plan_price': plan_price}
+                price_plan_list[idx] = plan_obj
+            })
+
+            price_pan_option_elements = ''
+            $.each(price_plan_list, function (idx, price_plan) {
+                let plan_time = parseInt(price_plan.plan_time)
+                let disabled = plan_time > time_delta ?  'disabled' : ''
+                price_pan_option_elements += "<option value=" + price_plan.plan_price + " " + disabled + ">" + price_plan.plan_time + "</option>"
+            })
+
+            $('#id_price_plan').empty()
+            $('#id_price_plan').append(price_pan_option_elements)
+        }
 
         function setAvailableStock() {
             let target_date = $('.js-start-date').val();
@@ -229,6 +278,8 @@
                     let start_time_elem = $('.js-start-time')
                     start_time_elem.empty()
                     start_time_elem.append(options)
+
+                    setAvailablePricePlan()
                 }
             });
         }
@@ -263,7 +314,10 @@
         }
 
         function initChildrenAgeField() {
-            let ages = $('#id_child_age').attr('value').split(', ')
+            let ages = []
+            if ($('#id_child_age').attr('value') !== undefined) {
+                ages = $('#id_child_age').attr('value').split(', ')
+            }
             if (ages.length > 1) {
                 let elem = '<div class="row">', i
                 for (i = 0; i < ages.length ; i++) {

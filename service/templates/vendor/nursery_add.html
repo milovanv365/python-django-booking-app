@@ -39,28 +39,18 @@
                 <div class="col-md-4">{% bootstrap_field nursery_form.stock %}</div>
             </div>
 
-            <div class="form-group">
-                <label class="control-label">Hourly Plan: </label>
+            <input type="hidden" name="price_plan" id="price_plan" value="{{ price_plan }}">
+            <div class="form-group text-center margin-top-main">
+                <h4 class="">Hourly Plan</h4>
             </div>
 
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-2">Hour(h)</div>
-                    <div class="col-md-4">{% bootstrap_field nursery_form.time_one %}</div>
-                    <div class="col-md-2">Price(usd)</div>
-                    <div class="col-md-4">{% bootstrap_field nursery_form.price_one %}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">Hour(h)</div>
-                    <div class="col-md-4">{% bootstrap_field nursery_form.time_two %}</div>
-                    <div class="col-md-2">Price(usd)</div>
-                    <div class="col-md-4">{% bootstrap_field nursery_form.price_two %}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-2">Hour(h)</div>
-                    <div class="col-md-4">{% bootstrap_field nursery_form.time_three %}</div>
-                    <div class="col-md-2">Price(usd)</div>
-                    <div class="col-md-4">{% bootstrap_field nursery_form.price_three %}</div>
+            <div class="price-plan-box">
+                <div class="price-plan-item form-inline justify-content-center">
+                    <label for="id_time" class="mr-sm-4">Hour(h)</label>
+                    <input type="number" class="form-control mr-sm-4 plan-hour" required="">
+                    <label for="id_price" class="mr-sm-4">Price(usd)</label>
+                    <input type="number" class="form-control mr-sm-4 plan-price" required="">
+                    <button type="button" class="btn btn-success" onclick="addItem()">+</button>
                 </div>
             </div>
 
@@ -81,10 +71,64 @@
         $(document).ready(function() {
             $('#image-clear_id').hide()
             $('#image-clear_id').next().hide()
+            initPricePlanBox()
         })
+        
+        function initPricePlanBox() {
+            let price_plan_items = JSON.parse($('#price_plan').val())
+            let box = $('.price-plan-box')
+            box.empty()
+            $.each(price_plan_items, function (idx, price_plan_item) {
+                let html = ''
+                html += '<div class="price-plan-item form-inline justify-content-center">'
+                html += '<label for="id_time" class="mr-sm-4">Hour(h)</label>'
+                html += '<input type="number" class="form-control mr-sm-4 plan-hour" required="" value="' + price_plan_item.time + '">'
+                html += '<label for="id_price" class="mr-sm-4">Price(usd)</label>'
+                html += '<input type="number" class="form-control mr-sm-4 plan-price" required="" value="' + price_plan_item.price + '">'
+
+                if (idx == 0) {
+                    html += '<button type="button" class="btn btn-success" onclick="addItem()">+</button>'
+                } else {
+                    html += '<button type="button" class="btn btn-danger" onclick="deleteItem(this)">-</button>'
+                }
+                html += '</div>'
+
+                box.append(html)
+            })
+        }
+        
+        function addItem() {
+            let html = ''
+            html += '<div class="price-plan-item form-inline justify-content-center">'
+            html += '<label for="id_time" class="mr-sm-4">Hour(h)</label>'
+            html += '<input type="number" class="form-control mr-sm-4 plan-hour" required="">'
+            html += '<label for="id_price" class="mr-sm-4">Price(usd)</label>'
+            html += '<input type="number" class="form-control mr-sm-4 plan-price" required="">'
+            html += '<button type="button" class="btn btn-danger" onclick="deleteItem(this)">-</button>'
+            html += '</div>'
+            let box = $('.price-plan-box')
+            box.append(html)
+        }
+
+        function deleteItem(obj) {
+            $(obj).parent().remove()
+        }
+        
         function goNext() {
             let imgSelectObj = $('#id_image').val()
             let imgUrl = $('#id_image').siblings('a').text()
+
+            let price_plan_items = $('.price-plan-item')
+            let item_list = []
+            $.each(price_plan_items, function (idx, price_plan_item) {
+                let plan_time = $(price_plan_item).find('.plan-hour').val()
+                let plan_price = $(price_plan_item).find('.plan-price').val()
+                let item_obj = { 'time': plan_time, 'price': plan_price }
+                item_list[idx] = item_obj
+            })
+
+            let item_list_string =  JSON.stringify(item_list)
+            $('#price_plan').val(item_list_string)
 
             if (imgSelectObj == '' && imgUrl == '') {
                 $('.alert-choose-image').show()

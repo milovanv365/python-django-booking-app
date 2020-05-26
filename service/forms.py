@@ -69,40 +69,6 @@ class NurseryForm(forms.Form):
         widget=forms.Select,
         choices=CITY_CHOICES,
     )
-    time_one = forms.CharField(
-        label='',
-        max_length=10,
-        widget=forms.NumberInput()
-    )
-    price_one = forms.CharField(
-        label='',
-        max_length=10,
-        widget=forms.NumberInput()
-    )
-    time_two = forms.CharField(
-        label='',
-        max_length=10,
-        required=False,
-        widget=forms.NumberInput()
-    )
-    price_two = forms.CharField(
-        label='',
-        max_length=10,
-        required=False,
-        widget=forms.NumberInput()
-    )
-    time_three = forms.CharField(
-        label='',
-        max_length=10,
-        required=False,
-        widget=forms.NumberInput()
-    )
-    price_three = forms.CharField(
-        label='',
-        max_length=10,
-        required=False,
-        widget=forms.NumberInput()
-    )
     image = forms.ImageField(
         required=False
     )

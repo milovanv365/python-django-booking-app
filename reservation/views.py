@@ -11,9 +11,11 @@ from django.template.loader import get_template
 from reservation.models import Reservation, Payment
 from service.models import Nursery, NurseryLimit
 from .forms import ReservationForm
+import datetime, time
 
 
 def reservation_add(request, nursery_id):
+    current_date = time.mktime(datetime.date.today().timetuple())
     current_user = request.user
     reservation_exist = False
 
@@ -66,6 +68,7 @@ def reservation_add(request, nursery_id):
         'form': form,
         'nursery': nursery,
         'reservation_exist': reservation_exist,
+        'current_date': current_date
     }
     return render(request, 'reservation/add.html', context)
 

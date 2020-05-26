@@ -132,27 +132,11 @@ def vendor_dashboard(request):
             address = nursery_form.cleaned_data['address']
             telephone = nursery_form.cleaned_data['telephone']
             station = nursery_form.cleaned_data['station']
-            # price = 500
             stock = nursery_form.cleaned_data['stock']
             image = nursery_form.cleaned_data['image']
             city = City.objects.get(id=nursery_form.cleaned_data['city'])
 
-            price_plan = []
-            time_one = nursery_form.cleaned_data['time_one']
-            price_one = nursery_form.cleaned_data['price_one']
-            time_two = nursery_form.cleaned_data['time_two']
-            price_two = nursery_form.cleaned_data['price_two']
-            time_three = nursery_form.cleaned_data['time_three']
-            price_three = nursery_form.cleaned_data['price_three']
-
-            if time_one != '' and price_one != '':
-                price_plan.append({'time': time_one, 'price': price_one})
-            if time_two != '' and price_two != '':
-                price_plan.append({'time': time_two, 'price': price_two})
-            if time_three != '' and price_three != '':
-                price_plan.append({'time': time_three, 'price': price_three})
-
-            price_plan = json.dumps(price_plan)
+            price_plan = nursery_form.data['price_plan']
 
             nursery_name_check = Nursery.objects.filter(name=name)
             nursery_slug_check = Nursery.objects.filter(slug=slug)
@@ -175,12 +159,6 @@ def vendor_dashboard(request):
                             nursery_update(nursery, nursery_form, price_plan, current_user)
                             return redirect('service:VendorDashboard')
 
-                # if nursery_name_check.user != current_user:
-                #     if len(nursery_name_check) > 0 or len(nursery_slug_check) > 0:
-                #         nursery_name_or_slug_exist = True
-                #     else:
-                #         nursery_update(nursery, nursery_form, price_plan, current_user)
-                #         return redirect('service:VendorDashboard')
             except Nursery.DoesNotExist:
                 if len(nursery_name_check) > 0 or len(nursery_slug_check) > 0:
                     nursery_name_or_slug_exist = True
@@ -215,26 +193,15 @@ def vendor_dashboard(request):
                 'stock': nursery.stock,
                 'city': nursery.city_id
             }
-            price_plan = json.loads(nursery.price_plan)
-            if price_plan is not None:
-                for x in range(len(price_plan)):
-                    price_plan_dict = price_plan[x]
-                    if x == 0:
-                        nursery_form.initial['time_one'] = price_plan_dict['time']
-                        nursery_form.initial['price_one'] = price_plan_dict['price']
-                    elif x == 1:
-                        nursery_form.initial['time_two'] = price_plan_dict['time']
-                        nursery_form.initial['price_two'] = price_plan_dict['price']
-                    elif x == 2:
-                        nursery_form.initial['time_three'] = price_plan_dict['time']
-                        nursery_form.initial['price_three'] = price_plan_dict['price']
         except Nursery.DoesNotExist:
             pass
 
     context = {
         'nursery_form': nursery_form,
-        'nursery_name_or_slug_exist': nursery_name_or_slug_exist
+        'nursery_name_or_slug_exist': nursery_name_or_slug_exist,
+        'price_plan': nursery.price_plan
     }
+
     return render(request, 'vendor/nursery_add.html', context)
 
 

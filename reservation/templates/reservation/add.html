@@ -35,11 +35,15 @@
                 <input type="hidden" name="period" id="period" value="">
                 <input type="hidden" name="total_price" id="total_price" value="">
                 <input type="hidden" name="children_age" id="children_age" value="">
+                <input type="hidden" name="current_date" id="current_date" value="{{ current_date }}">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6 row">
                             <div class="col-md-4"><label class="">Date</label></div>
                             <div class="col-md-8">{% bootstrap_field form.start_date %}</div>
+                            <div class="alert alert-danger alert-start-date display-none">
+                                <strong>The date cannot be in the past. You must choose future date! </strong>
+                            </div>
                         </div>
                         <div class="col-md-3 row">
                             <div class="col-md-6"><label class="">Start Time</label></div>
@@ -129,6 +133,7 @@
             setPeriod()
             setTotalPrice()
 
+
             $('#id_price_plan').change(function () {
                 setPeriod()
                 setTotalPrice()
@@ -147,7 +152,52 @@
                 setAvailableDateTime()
             })
 
+            $('.js-start-time').change(function () {
+                setAvailablePricePlan()
+            })
+
         })
+
+        function setAvailablePricePlan() {
+            let start_time = parseInt($('.js-start-time').val())
+            let unavailable_time_list = []
+            let unavailable_time_elements = $('.js-start-time').find('option:disabled')
+            $.each(unavailable_time_elements, function (idx, element) {
+                let unavailable_time = parseInt($(element).val())
+                unavailable_time_list[idx] = unavailable_time
+            })
+
+            if (unavailable_time_list.length < 1) return
+
+            let time_delta = 0
+            $.each(unavailable_time_list, function (idx, unavailable_time) {
+                if (unavailable_time > start_time) {
+                    time_delta = unavailable_time - start_time
+
+                    return false
+                }
+            })
+
+            let price_pan_option_elements = $('#id_price_plan').find('option')
+            let price_plan_list = []
+
+            $.each(price_pan_option_elements, function (idx, price_plan_option_element) {
+                let plan_time = $(price_plan_option_element).text()
+                let plan_price = $(price_plan_option_element).val()
+                let plan_obj = {'plan_time': plan_time, 'plan_price': plan_price}
+                price_plan_list[idx] = plan_obj
+            })
+
+            price_pan_option_elements = ''
+            $.each(price_plan_list, function (idx, price_plan) {
+                let plan_time = parseInt(price_plan.plan_time)
+                let disabled = plan_time > time_delta ?  'disabled' : ''
+                price_pan_option_elements += "<option value=" + price_plan.plan_price + " " + disabled + ">" + price_plan.plan_time + "</option>"
+            })
+
+            $('#id_price_plan').empty()
+            $('#id_price_plan').append(price_pan_option_elements)
+        }
 
         function setAvailableStock() {
             let target_date = $('.js-start-date').val();
@@ -160,7 +210,6 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    {#console.log(data.stock)#}
                     $('.js-available-stock').text(data.stock)
                     if (data.stock < 1 ) {
                         $('.reservation-info').hide();
@@ -244,6 +293,8 @@
                     })
 
                     start_time_elem.append(options)
+
+                    setAvailablePricePlan()
                 }
             });
         }
@@ -254,7 +305,8 @@
         }
 
         function setTotalPrice() {
-            let unit_price = parseInt($('#id_price_plan').children("option:selected").val())
+            {#let unit_price = parseInt($('#id_price_plan').children("option:selected").val())#}
+            let unit_price = parseInt($('#id_price_plan').val())
             let amount = $('#id_child_number').val() !== '' ? parseInt($('#id_child_number').val()) : 1
             let total_price = unit_price * amount
 
@@ -295,7 +347,7 @@
               })
             .get()
             .join( ", " );
-            console.log(child_ages)
+
             $('#children_age').val(child_ages)
         }
     </script>
